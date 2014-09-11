@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -14,8 +15,10 @@ public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     // latitude and longitude
+
     double latitude = 6.235925000000000000;
     double longitude = -75.575136999999980000;
+    private double[] MedColombia = {latitude, longitude};
     private MarkerOptions marker;
     private CameraPosition cameraPosition;
 
@@ -24,7 +27,7 @@ public class MapsActivity extends FragmentActivity {
         // create marker
         marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("Hello Maps ");
         cameraPosition = new CameraPosition.Builder().target(
-                new LatLng(latitude, longitude)).zoom(12).build();
+                new LatLng(MedColombia[0], MedColombia[1])).zoom(12).build();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
@@ -60,8 +63,19 @@ public class MapsActivity extends FragmentActivity {
             // adding marker
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
-            //mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            // create marker
+            MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("Medellin");
+
+            // Changing marker icon
+            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.arco_128x128));
+
+            // adding marker
             mMap.addMarker(marker);
+
+            mMap.getUiSettings().setCompassEnabled(true);
+            //mMap user location and icon location
+            mMap.setMyLocationEnabled(true);
+
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
