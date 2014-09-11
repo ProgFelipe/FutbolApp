@@ -60,6 +60,7 @@ public class MapsActivity extends FragmentActivity {
             // adding marker
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
+            //mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
             mMap.addMarker(marker);
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
