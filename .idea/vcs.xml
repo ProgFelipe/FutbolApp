@@ -4,6 +4,7 @@
     <mapping directory="$PROJECT_DIR$/.." vcs="CVS" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/AndroidApp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/FutbolApp" vcs="Git" />
   </component>
 </project>
 

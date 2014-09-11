@@ -3,20 +3,33 @@ package example.futbolapp;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    // latitude and longitude
+    double latitude = 6.235925000000000000;
+    double longitude = -75.575136999999980000;
+    private MarkerOptions marker;
+    private CameraPosition cameraPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // create marker
+        marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("Hello Maps ");
+        cameraPosition = new CameraPosition.Builder().target(
+                new LatLng(latitude, longitude)).zoom(12).build();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     @Override
@@ -44,8 +57,10 @@ public class MapsActivity extends FragmentActivity {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
+            // adding marker
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
+            mMap.addMarker(marker);
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
