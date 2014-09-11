@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Futbolapp</string>
+    <string name="title_activity_maps">Busqueda cancha</string>
+    <string name="google_maps_key">AIzaSyDPZXJD1a0L_BuQLwBytLosynrG3NLIIGQ</string>
+</resources>
