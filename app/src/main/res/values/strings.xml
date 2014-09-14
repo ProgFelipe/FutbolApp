@@ -9,14 +9,6 @@
     <string name="btn_mapa">Canchas en mapa</string>
     <string name="btn_programa">Eventos</string>
 
-    <string-array name="nav_options">
-        <item>Option 1</item>
-        <item>Option 2</item>
-        <item>Option 3</item>
-        <item>Option 4</item>
-        <item>Option 5</item>
-        <item>Option 6</item>
-    </string-array>
     <string name="open_drawer">Drawer abierto</string>
     <string name="close_drawer">Drawer cerrado</string>
 </resources>
