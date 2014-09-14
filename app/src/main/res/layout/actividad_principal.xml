@@ -9,7 +9,32 @@
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_mapa"
+            android:id="@+id/btnMapa"
+            android:onClick="onBtnClick"
+            android:layout_gravity="center_horizontal|bottom" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_buscar"
+            android:id="@+id/btnBuscar"
+            android:layout_gravity="right|center_vertical"
+            android:onClick="onBtnClick" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_programa"
+            android:id="@+id/btn_programa"
+            android:onClick="onBtnClick"
+            android:layout_gravity="center_horizontal|top" />
+    </FrameLayout>
 
 
     <!-- The navigation drawer -->

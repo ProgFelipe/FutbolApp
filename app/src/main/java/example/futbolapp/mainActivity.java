@@ -1,5 +1,6 @@
 package example.futbolapp;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -88,16 +89,34 @@ public class mainActivity  extends ActionBarActivity {
 
         // Create a new fragment and specify the option to show based on
         // position
-        Fragment fragment = new MyFragment();
-        Bundle args = new Bundle();
-        args.putString(MyFragment.KEY_TEXT, mTitle.toString());
-        fragment.setArguments(args);
+       switch (position){
+            case 0:
+                ActionBarActivity prg = new programa();
+                Bundle args = new Bundle();
+                this.startActivity(new Intent(this, programa.class));
+                break;
+            case 1:
+                ActionBarActivity bsc = new busqueda();
+                new Bundle();
+                this.startActivity(new Intent(this, busqueda.class));
+                break;
+            case 2:
+                MapsActivity map = new MapsActivity();
+                new Bundle();
+                this.startActivity(new Intent(this, MapsActivity.class));
+                break;
+        }
 
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment).commit();
+         /*   Fragment fragment = new MyFragment();
+            Bundle args = new Bundle();
+            args.putString(MyFragment.KEY_TEXT, mTitle.toString());
+            fragment.setArguments(args);
 
+            // Insert the fragment by replacing any existing fragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, fragment).commit();
+          */
         // Highlight the selected item, update the title, and close the drawer
         navList.setItemChecked(position, true);
         getSupportActionBar().setTitle(mTitle);
@@ -146,7 +165,7 @@ public class mainActivity  extends ActionBarActivity {
         // Handle your other action bar items...
         return super.onOptionsItemSelected(item);
     }
-    /*public void onBtnClick(View view){
+    public void onBtnClick(View view){
         Intent intent;
            switch (view.getId()){
                case R.id.btn_programa:
@@ -160,5 +179,5 @@ public class mainActivity  extends ActionBarActivity {
                    break;
            }
         startActivity(intent);
-    }*/
+    }
 }
