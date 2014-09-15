@@ -165,7 +165,7 @@ public class mainActivity  extends ActionBarActivity {
         // Handle your other action bar items...
         return super.onOptionsItemSelected(item);
     }
-    public void onBtnClick(View view){
+    /*public void onBtnClick(View view){
         Intent intent;
            switch (view.getId()){
                case R.id.btn_programa:
@@ -179,5 +179,5 @@ public class mainActivity  extends ActionBarActivity {
                    break;
            }
         startActivity(intent);
-    }
+    }*/
 }
