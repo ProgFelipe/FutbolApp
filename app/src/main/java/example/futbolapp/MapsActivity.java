@@ -17,16 +17,24 @@ public class MapsActivity extends FragmentActivity {
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     // latitude and longitude
 
+    //Datos quemados
     double latitude = 6.235925000000000000;
     double longitude = -75.575136999999980000;
     private double[] MedColombia = {latitude, longitude};
+    private double[] temploFutbol = {6.18324,-75.58665};
+    private double[] senorGol = {6.1830726,-75.5888026};
+    private double[] eafit = {6.200253, -75.578846};
+    private double[] marte1 = {6.256550, -75.588950};
+    private double[] marte2 = {6.256145, -75.588220};
+
+    //
     private MarkerOptions marker;
     private CameraPosition cameraPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // create marker
-        marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("Hello Maps ");
+        //marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("Hello Maps ");
         cameraPosition = new CameraPosition.Builder().target(
                 new LatLng(MedColombia[0], MedColombia[1])).zoom(12).build();
 
@@ -66,13 +74,21 @@ public class MapsActivity extends FragmentActivity {
                     .getMap();
             // create marker
             MarkerOptions marker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("Medellin");
-
+            MarkerOptions marker2 = new MarkerOptions().position(new LatLng(temploFutbol[0], temploFutbol[1])).title("Templo del futbol");
+            MarkerOptions marker3 = new MarkerOptions().position(new LatLng(senorGol[0], senorGol[1])).title("Señor Gol");
+            MarkerOptions marker4 = new MarkerOptions().position(new LatLng(eafit[0], eafit[1])).title("CANCHA Unv. EAFIT");
+            MarkerOptions marker5 = new MarkerOptions().position(new LatLng(marte1[0], marte1[1])).title("MARTE 1");
+            MarkerOptions marker6 = new MarkerOptions().position(new LatLng(marte2[0], marte2[1])).title("MARTE 2");
             // Changing marker icon
-            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.arco_128x128));
+            //marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.arco_128x128));
 
             // adding marker
             mMap.addMarker(marker);
-
+            mMap.addMarker(marker2);
+            mMap.addMarker(marker3);
+            mMap.addMarker(marker4);
+            mMap.addMarker(marker5);
+            mMap.addMarker(marker6);
             mMap.getUiSettings().setCompassEnabled(true);
             //mMap user location and icon location
             mMap.setMyLocationEnabled(true);
