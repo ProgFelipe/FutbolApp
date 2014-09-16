@@ -24,7 +24,7 @@ public class mainActivity  extends ActionBarActivity {
     private ListView navList;
     private CharSequence mTitle;
     private ActionBarDrawerToggle drawerToggle;
-asdasdasd
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
