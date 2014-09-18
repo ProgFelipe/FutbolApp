@@ -26,6 +26,7 @@ public class MapsActivity extends FragmentActivity {
     private double[] eafit = {6.200253, -75.578846};
     private double[] marte1 = {6.256550, -75.588950};
     private double[] marte2 = {6.256145, -75.588220};
+    private double[] aristiGol = {6.155456, -75.614233};
 
     //
     private MarkerOptions marker;
@@ -79,6 +80,9 @@ public class MapsActivity extends FragmentActivity {
             MarkerOptions marker4 = new MarkerOptions().position(new LatLng(eafit[0], eafit[1])).title("CANCHA Unv. EAFIT");
             MarkerOptions marker5 = new MarkerOptions().position(new LatLng(marte1[0], marte1[1])).title("MARTE 1");
             MarkerOptions marker6 = new MarkerOptions().position(new LatLng(marte2[0], marte2[1])).title("MARTE 2");
+            MarkerOptions marker7 = new MarkerOptions().position(new LatLng(aristiGol[0], aristiGol[1])).title("Aristigol");
+
+
             // Changing marker icon
             //marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.arco_128x128));
 
@@ -89,6 +93,7 @@ public class MapsActivity extends FragmentActivity {
             mMap.addMarker(marker4);
             mMap.addMarker(marker5);
             mMap.addMarker(marker6);
+            mMap.addMarker(marker7);
             mMap.getUiSettings().setCompassEnabled(true);
             //mMap user location and icon location
             mMap.setMyLocationEnabled(true);

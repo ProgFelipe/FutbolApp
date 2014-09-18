@@ -6,6 +6,7 @@ import java.io.File;
  * Created by Usuario on 12/09/2014.
  */
 public class cancha {
+
     private String nombre;
     private String descripcion;
     private int telefono;
@@ -13,8 +14,8 @@ public class cancha {
     private double longitud;
     private File marcador;
 
-
     public cancha(String nombre, double latitud, double longitud, String descripcion, int telefono, File marcador){
+
         this.nombre = nombre;
         this.latitud = latitud;
         this.longitud = longitud;
@@ -23,4 +24,8 @@ public class cancha {
         this.marcador = marcador;
     }
 
+    public void comentar(String comentario)
+    {
+
+    }
 }

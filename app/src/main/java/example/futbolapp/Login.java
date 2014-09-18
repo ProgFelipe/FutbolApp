@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 
 public class Login extends Activity {
 
@@ -26,7 +28,7 @@ public class Login extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Button btnLogin = (Button) findViewById(R.id.btnLogin);
+        //Button btnLogin = (Button) findViewById(R.id.btnLogin);
         TextView usuario = (TextView) findViewById(R.id.usuario);
         TextView password = (TextView) findViewById(R.id.password);
 
