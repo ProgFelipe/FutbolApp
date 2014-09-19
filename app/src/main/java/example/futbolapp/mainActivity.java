@@ -37,7 +37,9 @@ public class mainActivity  extends ActionBarActivity {
         //SQLite
         //Creación o retorno de la base de datoS
         DB_Manager manager = new DB_Manager(this);
-
+        //Insertar en la base de datos registro de usuario
+        manager.registrarUsuario("Johan","ElCampeon10");
+        
         new serverConnection();
         mTitle = getTitle(); // Get current title
 
