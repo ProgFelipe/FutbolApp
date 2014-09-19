@@ -1,6 +1,7 @@
 package example.futbolapp;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,6 +15,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import example.futbolapp.database.DB_Manager;
+import example.futbolapp.database.DbHelper;
+import example.futbolapp.database.serverConnection;
 
 /**
  * Created by Usuario on 11/09/2014.
@@ -29,7 +34,11 @@ public class mainActivity  extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actividad_principal);
+        //SQLite
+        //Creación o retorno de la base de datoS
+        DB_Manager manager = new DB_Manager(this);
 
+        new serverConnection();
         mTitle = getTitle(); // Get current title
 
         this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
