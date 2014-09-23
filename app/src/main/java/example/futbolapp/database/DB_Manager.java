@@ -2,6 +2,7 @@ package example.futbolapp.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
@@ -89,5 +90,10 @@ public class DB_Manager {
     public void modificarInfoCancha(String nomb, String direccion, String tel,
                                     String latitud, String longitud, String Icono, String info){
         db.update(TABLE_CANCHAS, setContentValuesCancha(nomb, direccion , tel , latitud, longitud, Icono, info),CN_Informacion+"=?", new String[]{info});
+    }
+    public Cursor cargarCursorCanchas(){
+        String[] columnas = new String[]{CN_Id,CN_Nombre,CN_Direccion,CN_Telefono,CN_Latitud,CN_Longitud,CN_Icono,CN_Informacion};
+        //Retorna todos los registros de la base de datos
+        return db.query(TABLE_CANCHAS, columnas, null, null, null, null, null, null);
     }
 }
