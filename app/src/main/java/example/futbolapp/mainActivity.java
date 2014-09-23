@@ -52,7 +52,7 @@ public class mainActivity  extends ActionBarActivity {
                 "6.256550"," -75.588950","","Canchas de futbol el Marte 1");
         manager.insertarCancha("Marte 2","Cra 43 123 313","21232123",
                 "6.256145"," -75.588220","","Canchas de futbol el Marte 2");
-        new serverConnection();
+        //new serverConnection();
         mTitle = getTitle(); // Get current title
 
         this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
