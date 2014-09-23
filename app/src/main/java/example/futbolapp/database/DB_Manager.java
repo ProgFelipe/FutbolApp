@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
  * Created by Felipe on 19/09/2014.
  */
 public class DB_Manager {
-    public static final String TABLE_NAME = "canchas";
+    public static final String TABLE_CANCHAS = "canchas";
 
     public static final String CN_Id = "_id";
     public static final String CN_Nombre = "name";
@@ -21,7 +21,7 @@ public class DB_Manager {
 
    //Creacion de la tabla canchas
 
-    public static final String CREATE_TABLE_CANCHAS = "create table "+TABLE_NAME+" ("
+    public static final String CREATE_TABLE_CANCHAS = "create table "+TABLE_CANCHAS+" ("
             + CN_Id + " integer primary key autoincrement, "
             + CN_Nombre + " text not null, "
             + CN_Direccion + " text not null, "
@@ -67,10 +67,10 @@ public class DB_Manager {
 
     public void insertarCancha(String nomb, String direccion, String tel,
                                String latitud, String longitud, String icono, String info){
-        db.insert(TABLE_NAME, null, setContentValuesCancha(nomb,direccion,tel,latitud,longitud,icono, info));
+        db.insert(TABLE_CANCHAS, null, setContentValuesCancha(nomb,direccion,tel,latitud,longitud,icono, info));
     }
 
-    public ContentValues setContentValuesUsuario(String nomb, String clave){
+    private ContentValues setContentValuesUsuario(String nomb, String clave){
         ContentValues valores = new ContentValues();
         valores.put(CN_NombreUsuario, nomb);
         valores.put(CN_Password, clave);
@@ -80,5 +80,14 @@ public class DB_Manager {
 
     public void registrarUsuario(String nomb, String clave){
         db.insert(TABLE_NAME1, null, setContentValuesUsuario(nomb, clave));
+    }
+
+    public void eliminarCancha(String nombre){
+        db.delete(TABLE_CANCHAS, CN_Nombre+"=?",new String[]{nombre});
+    }
+
+    public void modificarInfoCancha(String nomb, String direccion, String tel,
+                                    String latitud, String longitud, String Icono, String info){
+        db.update(TABLE_CANCHAS, setContentValuesCancha(nomb, direccion , tel , latitud, longitud, Icono, info),CN_Informacion+"=?", new String[]{info});
     }
 }

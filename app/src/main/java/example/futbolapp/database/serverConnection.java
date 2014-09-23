@@ -10,10 +10,10 @@ import java.sql.SQLException;
  * Created by Usuario on 12/09/2014.
  */
 public class serverConnection {
-    static String bd = "solwebco_reservas";
+    static String bd = "reservas";
     static String user = "solwebco_reserva";
     static String password = "TPsKz!)IG*Fo";
-    static String url = "jdbc:mysql://www.solweb.co/reservas/127.0.0.1/"+bd;
+    static String url = "jdbc:mysql://www.solweb.co/"+bd;
 
     Connection connection = null;
 
