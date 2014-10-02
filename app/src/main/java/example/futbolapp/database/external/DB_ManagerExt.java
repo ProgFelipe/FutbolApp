@@ -1,9 +1,9 @@
-package example.futbolapp.database;
+package example.futbolapp.database.external;
 
 /**
  * Created by Usuario on 12/09/2014.
  */
-public class dataManage {
+public class DB_ManagerExt {
 
     public String getCanchas(){
         String a = "";

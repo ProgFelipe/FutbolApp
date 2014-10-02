@@ -1,9 +1,11 @@
-package example.futbolapp.database;
+package example.futbolapp.database.local;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import example.futbolapp.database.local.DbHelper;
 
 /**
  * Created by Felipe on 19/09/2014.
@@ -19,6 +21,8 @@ public class DB_Manager {
     public static final String CN_Longitud = "long";
     public static final String CN_Icono = "_icon";
     public static final String CN_Informacion = "info";
+
+
 
    //Creacion de la tabla canchas
 

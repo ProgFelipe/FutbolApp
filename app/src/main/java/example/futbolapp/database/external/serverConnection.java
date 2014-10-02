@@ -1,4 +1,4 @@
-package example.futbolapp.database;
+package example.futbolapp.database.external;
 
 import android.util.Log;
 

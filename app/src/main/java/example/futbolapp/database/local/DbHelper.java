@@ -1,4 +1,4 @@
-package example.futbolapp.database;
+package example.futbolapp.database.local;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

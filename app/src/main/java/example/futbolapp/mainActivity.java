@@ -1,12 +1,9 @@
 package example.futbolapp;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -16,9 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import example.futbolapp.database.DB_Manager;
-import example.futbolapp.database.DbHelper;
-import example.futbolapp.database.serverConnection;
+import example.futbolapp.database.local.DB_Manager;
 
 /**
  * Created by Usuario on 11/09/2014.
@@ -34,24 +29,8 @@ public class mainActivity  extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actividad_principal);
-        //SQLite
-        //Creación o retorno de la base de datoS
-        DB_Manager manager = new DB_Manager(this);
-        //Insertar en la base de datos registro de usuario
-        manager.registrarUsuario("Johan","ElCampeon10");
-        //String nomb, String direccion, String tel,
-        //String latitud, String longitud,
-        // String icono, String info
-        manager.insertarCancha("El templo","Cra 43 123 313","21232123","6.18324",
-                "-75.58665","","Canchas de futbol el templo del futbl");
-        manager.insertarCancha("El Señor Gol","Cra 43 123 313","21232123",
-                "6.1830726","-75.5888026","","Canchas de futbol el Señor Gol");
-        manager.insertarCancha("Unv. Eafit canchas","Cra 43 123 313","21232123",
-                "6.200253"," -75.578846","","Canchas de futbol el Unv. Eafit");
-        manager.insertarCancha("Marte 1","Cra 43 123 313","21232123",
-                "6.256550"," -75.588950","","Canchas de futbol el Marte 1");
-        manager.insertarCancha("Marte 2","Cra 43 123 313","21232123",
-                "6.256145"," -75.588220","","Canchas de futbol el Marte 2");
+
+
         //new serverConnection();
         mTitle = getTitle(); // Get current title
 
