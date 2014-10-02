@@ -7,9 +7,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 
+import example.futbolapp.database.MergeData;
 import example.futbolapp.database.local.DB_Manager;
-import example.futbolapp.database.canchas;
-import example.futbolapp.database.local.DbHelper;
 
 /**
  * Created by Usuario on 11/09/2014.
@@ -43,7 +42,7 @@ public class busqueda extends ActionBarActivity {
                 "6.256145"," -75.588220","","Canchas de futbol el Marte 2");*/
         //Get all fields from the web service
         //And put them in this layout
-        new canchas();
+        new MergeData();
 
 
        /* manager = new DB_Manager(this);
