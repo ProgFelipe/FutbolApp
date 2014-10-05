@@ -87,8 +87,8 @@ public class DB_Manager {
         db.insert(TABLE_NAME1, null, setContentValuesUsuario(nomb, clave));
     }
 
-    public void eliminarCancha(String nombre){
-        db.delete(TABLE_CANCHAS, CN_Nombre+"=?",new String[]{nombre});
+    public void eliminarCancha(String ID){
+        db.delete(TABLE_CANCHAS, CN_Id+"=?",new String[]{ID});
     }
 
     public void modificarInfoCancha(String nomb, String direccion, String tel,
@@ -100,4 +100,9 @@ public class DB_Manager {
         //Retorna todos los registros de la base de datos
         return db.query(TABLE_CANCHAS, columnas, null, null, null, null, null, null);
     }
+    public Cursor buscarCancha(String nombre){
+        String[] columnas = new String[]{CN_Id,CN_Nombre,CN_Direccion,CN_Telefono,CN_Latitud,CN_Longitud,CN_Icono,CN_Informacion};
+        return db.query(TABLE_CANCHAS, columnas, CN_Nombre +"=?", new String []{nombre}, null, null, null, null);
+    }
+
 }
