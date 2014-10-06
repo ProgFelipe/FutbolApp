@@ -2,6 +2,7 @@ package example.futbolapp;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -27,7 +28,12 @@ import java.util.ArrayList;
 
 /**
  * Created by Usuario on 11/09/2014.
+ * Apoyado en :
+ * Tutorial 16: Recuperar y Consultar Registros de SQLite con Android y mostrarlos en un ListView
+ * https://www.youtube.com/watch?v=sD-pz-vKlnI
+ *
  */
+
 public class searchActivity extends ActionBarActivity {
     private Cursor cursor;
     private DB_Manager manager;
@@ -60,14 +66,14 @@ public class searchActivity extends ActionBarActivity {
         );
         searchView = (SearchView) findViewById(R.id.searchFieldNameView);
         String SearchedField = searchView.toString();
+        //Buscar Cancha por nombre al hacer click en boton buscar
         searchView.setOnQueryTextListener(
                 new SearchView.OnQueryTextListener(){
 
                     @Override
                     public boolean onQueryTextSubmit(String s) {
                         //startActivity(new Intent(searchActivity.this, eventsActivity.class));
-                        Cursor c = manager.buscarCancha(searchView.getQuery().toString());
-                        adapter.changeCursor(c);
+                        new BuscarTask().execute();
                         return false;
                     }
 
@@ -101,9 +107,6 @@ public class searchActivity extends ActionBarActivity {
         String url = "http://solweb.co/reservas/api/field/fields";
         //Make Asynchronous call using AJAX method and show progress gif until get info
         aq.progress(R.id.progressBarSearch).ajax(url, JSONObject.class, this,"jsonCallback");
-    }
-    public void searchFields(String field){
-
     }
 
     public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
@@ -165,6 +168,25 @@ public class searchActivity extends ActionBarActivity {
             else{
                 Toast.makeText(aq.getContext(),"Unexpected Error occured",Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private class BuscarTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected  void onPreExecute(){
+            Toast.makeText(getApplicationContext(),"Buscando cancha ...", Toast.LENGTH_SHORT).show();
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            cursor = manager.buscarCancha(searchView.getQuery().toString());
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            adapter.changeCursor(cursor);
+            Toast.makeText(getApplicationContext(),"Busqueda Finalizada ...", Toast.LENGTH_SHORT).show();
+            //Show getted information of fields
         }
     }
 
