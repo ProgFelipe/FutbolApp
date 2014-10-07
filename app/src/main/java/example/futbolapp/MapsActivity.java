@@ -1,8 +1,10 @@
 package example.futbolapp;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -11,6 +13,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Marker;
 
 public class MapsActivity extends FragmentActivity {
 
@@ -81,7 +84,6 @@ public class MapsActivity extends FragmentActivity {
             MarkerOptions marker5 = new MarkerOptions().position(new LatLng(marte1[0], marte1[1])).title("MARTE 1");
             MarkerOptions marker6 = new MarkerOptions().position(new LatLng(marte2[0], marte2[1])).title("MARTE 2");
             MarkerOptions marker7 = new MarkerOptions().position(new LatLng(aristiGol[0], aristiGol[1])).title("Aristigol");
-
 
             // Changing marker icon
             //marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.arco_128x128));
