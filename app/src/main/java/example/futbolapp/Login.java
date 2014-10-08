@@ -62,7 +62,7 @@ public class Login extends FragmentActivity {
         });
 
 
-        // para obtener la key hash
+        // para obtener la key hash y colocarla en el proyecto
         /*
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
