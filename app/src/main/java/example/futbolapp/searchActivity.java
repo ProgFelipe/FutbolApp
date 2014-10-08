@@ -2,7 +2,7 @@ package example.futbolapp;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
+//import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -55,7 +55,7 @@ public class searchActivity extends ActionBarActivity {
         aq = new AQuery(this);
         fields = new ArrayList<String>();
         listView = (ListView)findViewById(R.id.listViewSearch);
-        //autoComplete = (AutoCompleteTextView)findViewById(R.id.autocomplete);
+        autoComplete = (AutoCompleteTextView)findViewById(R.id.autocomplete);
 
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
@@ -129,13 +129,13 @@ public class searchActivity extends ActionBarActivity {
                         // String icono, String info
                         //if(manager.buscarCancha(jsonObject.getString("name")){
                         //Add data that is not in the local data base
-                        Log.v("Esta la cancha ", Boolean.toString(manager.buscarIdCancha(jsonObject.getString("id"))) );
+                        //Log.v("Esta la cancha ", Boolean.toString(manager.buscarIdCancha(jsonObject.getString("id"))) );
                         if(manager.buscarIdCancha(jsonObject.getString("id")) == false)
                         {
                             manager.insertarCancha(Integer.parseInt(jsonObject.getString("id")), jsonObject.getString("name"), jsonObject.getString("address"),
                                     jsonObject.getString("phone"), jsonObject.getString("latitude"), jsonObject.getString("length"),
                                     jsonObject.getString("icon"), jsonObject.getString("description"));
-                            Log.v("Agregando ", "Cancha");
+                            //Log.v("Agregando ", "Cancha");
                         }
                         //}
 
@@ -152,11 +152,11 @@ public class searchActivity extends ActionBarActivity {
             } catch (Exception e) {
                 Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
-            ArrayList a = manager.fromCursorToArrayListString(manager.cargarCursorCanchas());
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, a);
-            Log.v("numero de canhaS----- ", Integer.toString(a.size()));
-            listView.setAdapter(adapter);
-            //autoComplete.setAdapter(new ArrayAdapter<String>(this,R.layout.list_details,manager.cargarCursorCanchas().getColumnNames()));
+            //ArrayList a = manager.fromCursorToArrayListString(manager.cargarCursorCanchas());
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, a);
+            //Log.v("numero de canhaS----- ", Integer.toString(a.size()));
+            //listView.setAdapter(adapter);
+            autoComplete.setAdapter(new ArrayAdapter<String>(this,R.layout.list_details, manager.fromCursorToArrayListString(manager.cargarCursorCanchas())));
         }
         //When JSON is null
         else {
@@ -175,7 +175,7 @@ public class searchActivity extends ActionBarActivity {
         }
     }
 
-    private class BuscarTask extends AsyncTask<Void, Void, Void> {
+    /*private class BuscarTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected  void onPreExecute(){
@@ -192,23 +192,5 @@ public class searchActivity extends ActionBarActivity {
             Toast.makeText(getApplicationContext(),"Busqueda Finalizada ...", Toast.LENGTH_SHORT).show();
             //Show getted information of fields
         }
-    }
-
-    private class CanchasActualesTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected  void onPreExecute(){
-        }
-        @Override
-        protected Void doInBackground(Void... voids) {
-            cursor = manager.cargarCursorCanchas();
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            canchasAdapter.changeCursor(cursor);
-            //Show getted information of fields
-        }
-    }
-
+    }*/
 }
