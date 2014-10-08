@@ -13,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 //Json libraries
 import org.json.JSONArray;
@@ -60,8 +61,17 @@ public class searchActivity extends ActionBarActivity {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Toast.makeText(aq.getContext(), "Go to see field info and option to register", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(searchActivity.this, MapsActivity.class));
+                        //Toast.makeText(aq.getContext(), "", Toast.LENGTH_LONG).show();
+                        TextView tv = (TextView)view.findViewById(android.R.id.text1);
+                        String info = tv.getText().toString();
+
+                        Intent intent = new Intent(getApplicationContext(), fieldActivity.class);
+                        Cursor c = manager.buscarCancha(info);
+                        if(c != null && c.getCount() > 0) {
+                            c.moveToFirst();
+                            intent.putExtra("fieldID", c.getString(0));
+                        }
+                        startActivity(intent);
                     }
                 }
         );
@@ -152,10 +162,10 @@ public class searchActivity extends ActionBarActivity {
             } catch (Exception e) {
                 Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
-            //ArrayList a = manager.fromCursorToArrayListString(manager.cargarCursorCanchas());
-            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, a);
+            ArrayList a = manager.fromCursorToArrayListString(manager.cargarCursorCanchas());
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, a);
             //Log.v("numero de canhaS----- ", Integer.toString(a.size()));
-            //listView.setAdapter(adapter);
+            listView.setAdapter(adapter);
             //autoComplete.setAdapter(new ArrayAdapter<String>(this,R.layout.list_details, a));
         }
         //When JSON is null

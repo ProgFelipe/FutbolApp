@@ -2,7 +2,8 @@
 <resources>
     <string-array name="nav_options">
         <item>Mis Eventos</item>
-        <item>Buscar Canchas</item>
+        <item>Buscar por nombre</item>
+        <item>Buscar por fecha</item>
         <item>Ver Canchas en Mapa</item>
     </string-array>
 </resources>

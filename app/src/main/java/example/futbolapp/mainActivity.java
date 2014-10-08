@@ -99,7 +99,12 @@ public class mainActivity  extends ActionBarActivity {
                 new Bundle();
                 this.startActivity(new Intent(this, searchActivity.class));
                 break;
-            case 2:
+           case 2:
+               ActionBarActivity bscTime = new searchInTime();
+               new Bundle();
+               this.startActivity(new Intent(this, searchInTime.class));
+                break;
+            case 3:
                 MapsActivity map = new MapsActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, MapsActivity.class));

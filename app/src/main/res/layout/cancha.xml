@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ImgCancha"
+        android:src="@drawable/cancha"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
@@ -18,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/PuntajeCancha"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@+id/ImgCancha"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -26,20 +27,17 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/InfoCancha"
+        android:id="@+id/nombreCancha"
         android:layout_below="@+id/PuntajeCancha"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="100dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
-        android:id="@+id/TelCancha"
-        android:layout_below="@+id/InfoCancha"
+        android:id="@+id/telCancha"
+        android:layout_below="@+id/nombreCancha"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -48,8 +46,27 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/TelCancha"
+        android:id="@+id/infoCancha"
+        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/dirCancha"
+        android:layout_below="@+id/telCancha"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ver Disponibilidad"
+        android:id="@+id/buttonReservar"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="38dp" />
 </RelativeLayout>
