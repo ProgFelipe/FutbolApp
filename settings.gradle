@@ -1,1 +1,2 @@
-include ':app'
+include ':app', ':HelloFacebookSample', ':facebook', ':RPSSample', ':FriendPickerSample', ':PlacePickerSample', ':SwitchUserSample', ':Scrumptious'
+include ':Librerias:facebook'
