@@ -2,7 +2,7 @@ package example.futbolapp;
 
 import android.content.Intent;
 import android.database.Cursor;
-//import android.os.AsyncTask;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -38,7 +38,6 @@ public class searchActivity extends ActionBarActivity {
     private DB_Manager manager;
     private ListView listView;
     SimpleCursorAdapter adapter;
-    SimpleCursorAdapter canchasAdapter;
     private SearchView searchView ;
     private AutoCompleteTextView autoComplete;
     //AQuery object
@@ -55,7 +54,7 @@ public class searchActivity extends ActionBarActivity {
         aq = new AQuery(this);
         fields = new ArrayList<String>();
         listView = (ListView)findViewById(R.id.listViewSearch);
-        autoComplete = (AutoCompleteTextView)findViewById(R.id.autocomplete);
+        //autoComplete = (AutoCompleteTextView)findViewById(R.id.autocomplete);
 
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
@@ -66,7 +65,7 @@ public class searchActivity extends ActionBarActivity {
                     }
                 }
         );
-        /*searchView = (SearchView) findViewById(R.id.searchFieldNameView);
+        searchView = (SearchView) findViewById(R.id.searchFieldNameView);
         searchView.setQueryHint("Ingresa el nombre");
         //Buscar Cancha por nombre al hacer click en boton buscar
         searchView.setOnQueryTextListener(
@@ -81,18 +80,19 @@ public class searchActivity extends ActionBarActivity {
 
                     @Override
                     public boolean onQueryTextChange(String s) {
-                        Log.v("TEXT CANGED", searchView.getQuery()+"");
+
                         return false;
                     }
-                });*/
+                });
 
         //SQlite
         manager = new DB_Manager(this);
+        getFields();
+        //Text view two_line_list por defecto de android
+
         cursor = manager.cargarCursorCanchas();
         String[] from = new String[]{manager.CN_Nombre,manager.CN_Telefono};
         int [] to = new int[]{android.R.id.text1,android.R.id.text2};
-        getFields();
-        //Text view two_line_list por defecto de android
         adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,cursor, from, to,0);
         listView.setAdapter(adapter);
 
@@ -156,7 +156,7 @@ public class searchActivity extends ActionBarActivity {
             //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, a);
             //Log.v("numero de canhaS----- ", Integer.toString(a.size()));
             //listView.setAdapter(adapter);
-            autoComplete.setAdapter(new ArrayAdapter<String>(this,R.layout.list_details, manager.fromCursorToArrayListString(manager.cargarCursorCanchas())));
+            //autoComplete.setAdapter(new ArrayAdapter<String>(this,R.layout.list_details, a));
         }
         //When JSON is null
         else {
@@ -175,7 +175,7 @@ public class searchActivity extends ActionBarActivity {
         }
     }
 
-    /*private class BuscarTask extends AsyncTask<Void, Void, Void> {
+    private class BuscarTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected  void onPreExecute(){
@@ -192,5 +192,5 @@ public class searchActivity extends ActionBarActivity {
             Toast.makeText(getApplicationContext(),"Busqueda Finalizada ...", Toast.LENGTH_SHORT).show();
             //Show getted information of fields
         }
-    }*/
+    }
 }

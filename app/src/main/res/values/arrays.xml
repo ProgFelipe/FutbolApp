@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="nav_options">
-        <item>Eventos</item>
-        <item>Buscar</item>
-        <item>Mapa</item>
+        <item>Mis Eventos</item>
+        <item>Buscar Canchas</item>
+        <item>Ver Canchas en Mapa</item>
     </string-array>
 </resources>
