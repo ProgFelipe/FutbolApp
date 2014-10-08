@@ -11,29 +11,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 /**
  * Created by Usuario on 11/09/2014.
  */
-public class mainActivity  extends ActionBarActivity {
-
+public class eventsActivity extends ActionBarActivity {
+    private CharSequence mTitle;
     private DrawerLayout drawerLayout;
     private ListView navList;
-    private CharSequence mTitle;
     private ActionBarDrawerToggle drawerToggle;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.actividad_principal);
-
+        setContentView(R.layout.eventos);
 
         mTitle = getTitle(); // Get current title
-
-        this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        this.navList = (ListView) findViewById(R.id.left_drawer);
+        this.drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayoutEventos);
+        this.navList = (ListView) findViewById(R.id.left_drawerEventos);
 
         // Load an array of options names
         final String[] names = getResources().getStringArray(
@@ -66,21 +61,15 @@ public class mainActivity  extends ActionBarActivity {
                 supportInvalidateOptionsMenu();
             }
         };
-
-        // Set the drawer toggle as the DrawerListener
-        drawerLayout.setDrawerListener(drawerToggle);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
     }
-
     private class DrawerItemClickListener implements
             ListView.OnItemClickListener {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-        {
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                long id) {
             selectItem(position);
         }
+
     }
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
@@ -89,45 +78,27 @@ public class mainActivity  extends ActionBarActivity {
 
         // Create a new fragment and specify the option to show based on
         // position
-       switch (position){
+        switch (position) {
             case 0:
                 ActionBarActivity prg = new eventsActivity();
                 Bundle args = new Bundle();
-                this.startActivity(new Intent(this, eventsActivity.class));
+                startActivity(new Intent(this, eventsActivity.class));
                 break;
             case 1:
                 ActionBarActivity bsc = new searchActivity();
                 new Bundle();
-                this.startActivity(new Intent(this, searchActivity.class));
+                startActivity(new Intent(this, searchActivity.class));
                 break;
-           case 2:
-               ActionBarActivity bscTime = new searchInTime();
-               new Bundle();
-               this.startActivity(new Intent(this, searchInTime.class));
-                break;
-            case 3:
+            case 2:
                 MapsActivity map = new MapsActivity();
                 new Bundle();
-                this.startActivity(new Intent(this, MapsActivity.class));
+                startActivity(new Intent(this, MapsActivity.class));
                 break;
         }
-
-         /*   Fragment fragment = new MyFragment();
-            Bundle args = new Bundle();
-            args.putString(MyFragment.KEY_TEXT, mTitle.toString());
-            fragment.setArguments(args);
-
-            // Insert the fragment by replacing any existing fragment
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, fragment).commit();
-          */
-        // Highlight the selected item, update the title, and close the drawer
         navList.setItemChecked(position, true);
         getSupportActionBar().setTitle(mTitle);
         drawerLayout.closeDrawer(navList);
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -170,19 +141,4 @@ public class mainActivity  extends ActionBarActivity {
         // Handle your other action bar items...
         return super.onOptionsItemSelected(item);
     }
-    /*public void onBtnClick(View view){
-        Intent intent;
-           switch (view.getId()){
-               case R.id.btn_programa:
-                   intent = new Intent(this, programa.class);
-                   break;
-               case R.id.btnMapa:
-                   intent = new Intent(this, MapsActivity.class);
-                   break;
-               default:
-                   intent = new Intent(this, busqueda.class);
-                   break;
-           }
-        startActivity(intent);
-    }*/
 }

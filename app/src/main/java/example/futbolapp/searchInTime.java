@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 /**
- * Created by Usuario on 11/09/2014.
+ * Created by Felipe on 08/10/2014.
  */
-public class programa extends ActionBarActivity {
+public class searchInTime extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.eventos);
+        setContentView(R.layout.busqueda_horario);
     }
 }
