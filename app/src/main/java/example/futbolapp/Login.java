@@ -92,7 +92,6 @@ public class Login extends FragmentActivity {
         }
         */
 
-        //Button btnLogin = (Button) findViewById(R.id.btnLogin);
         TextView usuario = (TextView) findViewById(R.id.usuario);
         TextView password = (TextView) findViewById(R.id.password);
 
