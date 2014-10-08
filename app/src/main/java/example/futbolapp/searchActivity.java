@@ -5,12 +5,11 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
@@ -19,7 +18,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+//SQLite
 import example.futbolapp.database.local.DB_Manager;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
@@ -37,16 +36,17 @@ import java.util.ArrayList;
 public class searchActivity extends ActionBarActivity {
     private Cursor cursor;
     private DB_Manager manager;
-    private ListView lista;
+    private ListView listView;
     SimpleCursorAdapter adapter;
-    SearchView inputSearch;
+    SimpleCursorAdapter canchasAdapter;
+    private SearchView searchView ;
+    private AutoCompleteTextView autoComplete;
     //AQuery object
     AQuery aq;
 
-    ListView listView;
     ArrayList<String> fields;
 
-    SearchView searchView ;
+
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -55,6 +55,8 @@ public class searchActivity extends ActionBarActivity {
         aq = new AQuery(this);
         fields = new ArrayList<String>();
         listView = (ListView)findViewById(R.id.listViewSearch);
+        //autoComplete = (AutoCompleteTextView)findViewById(R.id.autocomplete);
+
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
@@ -64,8 +66,8 @@ public class searchActivity extends ActionBarActivity {
                     }
                 }
         );
-        searchView = (SearchView) findViewById(R.id.searchFieldNameView);
-        String SearchedField = searchView.toString();
+        /*searchView = (SearchView) findViewById(R.id.searchFieldNameView);
+        searchView.setQueryHint("Ingresa el nombre");
         //Buscar Cancha por nombre al hacer click en boton buscar
         searchView.setOnQueryTextListener(
                 new SearchView.OnQueryTextListener(){
@@ -82,23 +84,17 @@ public class searchActivity extends ActionBarActivity {
                         Log.v("TEXT CANGED", searchView.getQuery()+"");
                         return false;
                     }
-                });
+                });*/
 
         //SQlite
         manager = new DB_Manager(this);
         cursor = manager.cargarCursorCanchas();
-        lista = (ListView)findViewById(R.id.listViewSearch);
         String[] from = new String[]{manager.CN_Nombre,manager.CN_Telefono};
         int [] to = new int[]{android.R.id.text1,android.R.id.text2};
-        //Text view two_line_list por defecto de android
-
-        //GridView gridView = (GridView) findViewById(R.id.grid_view);
-        // Instance of ImageAdapter Class
-        //gridView.setAdapter(new ImageAdapter(this));
-        //Update fields with JSON response
         getFields();
+        //Text view two_line_list por defecto de android
         adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,cursor, from, to,0);
-        lista.setAdapter(adapter);
+        listView.setAdapter(adapter);
 
         }
 
@@ -133,9 +129,14 @@ public class searchActivity extends ActionBarActivity {
                         // String icono, String info
                         //if(manager.buscarCancha(jsonObject.getString("name")){
                         //Add data that is not in the local data base
-                            /*manager.insertarCancha(jsonObject.getString("name"), jsonObject.getString("address"),
+                        Log.v("Esta la cancha ", Boolean.toString(manager.buscarIdCancha(jsonObject.getString("id"))) );
+                        if(manager.buscarIdCancha(jsonObject.getString("id")) == false)
+                        {
+                            manager.insertarCancha(Integer.parseInt(jsonObject.getString("id")), jsonObject.getString("name"), jsonObject.getString("address"),
                                     jsonObject.getString("phone"), jsonObject.getString("latitude"), jsonObject.getString("length"),
-                                    jsonObject.getString("icon"), jsonObject.getString("description"));*/
+                                    jsonObject.getString("icon"), jsonObject.getString("description"));
+                            Log.v("Agregando ", "Cancha");
+                        }
                         //}
 
 
@@ -151,8 +152,11 @@ public class searchActivity extends ActionBarActivity {
             } catch (Exception e) {
                 Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
-            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, fields);
-            //listView.setAdapter(adapter);
+            ArrayList a = manager.fromCursorToArrayListString(manager.cargarCursorCanchas());
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, a);
+            Log.v("numero de canhaS----- ", Integer.toString(a.size()));
+            listView.setAdapter(adapter);
+            //autoComplete.setAdapter(new ArrayAdapter<String>(this,R.layout.list_details,manager.cargarCursorCanchas().getColumnNames()));
         }
         //When JSON is null
         else {
@@ -186,6 +190,23 @@ public class searchActivity extends ActionBarActivity {
         protected void onPostExecute(Void aVoid) {
             adapter.changeCursor(cursor);
             Toast.makeText(getApplicationContext(),"Busqueda Finalizada ...", Toast.LENGTH_SHORT).show();
+            //Show getted information of fields
+        }
+    }
+
+    private class CanchasActualesTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected  void onPreExecute(){
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            cursor = manager.cargarCursorCanchas();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            canchasAdapter.changeCursor(cursor);
             //Show getted information of fields
         }
     }
