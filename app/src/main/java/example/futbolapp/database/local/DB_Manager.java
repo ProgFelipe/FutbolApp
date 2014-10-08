@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+
 import example.futbolapp.database.local.DbHelper;
 
 /**
@@ -13,7 +15,7 @@ import example.futbolapp.database.local.DbHelper;
 public class DB_Manager {
     public static final String TABLE_CANCHAS = "canchas";
 
-    public static final String CN_Id = "_id";
+    public static final String CN_IdCancha = "_id";
     public static final String CN_Nombre = "name";
     public static final String CN_Direccion = "dir";
     public static final String CN_Telefono = "tel";
@@ -27,7 +29,7 @@ public class DB_Manager {
    //Creacion de la tabla canchas
 
     public static final String CREATE_TABLE_CANCHAS = "create table "+TABLE_CANCHAS+" ("
-            + CN_Id + " integer primary key autoincrement, "
+            + CN_IdCancha + " integer primary key, "
             + CN_Nombre + " text not null, "
             + CN_Direccion + " text not null, "
             + CN_Telefono + " text not null, "
@@ -42,7 +44,7 @@ public class DB_Manager {
     public static final String CN_Password = "clave";
 
     public static final String CREATE_TABLE_USUARIO = "create table "+TABLE_NAME1+" ("
-            + CN_Id + " integer primary key autoincrement, "
+            + CN_IdUsuario + " integer primary key autoincrement, "
             + CN_NombreUsuario + " text not null, "
             + CN_Password + " text not null); ";
 
@@ -56,9 +58,10 @@ public class DB_Manager {
     }
 
 
-    public ContentValues setContentValuesCancha(String nomb, String direccion, String tel,
+    public ContentValues setContentValuesCancha(Integer id, String nomb, String direccion, String tel,
                                           String latitud, String longitud, String Icono, String info){
         ContentValues valores = new ContentValues();
+        valores.put(CN_IdCancha, id);
         valores.put(CN_Nombre, nomb);
         valores.put(CN_Direccion, direccion);
         valores.put(CN_Telefono, tel);
@@ -70,9 +73,9 @@ public class DB_Manager {
         return valores;
     }
 
-    public void insertarCancha(String nomb, String direccion, String tel,
+    public void insertarCancha(int id, String nomb, String direccion, String tel,
                                String latitud, String longitud, String icono, String info){
-        db.insert(TABLE_CANCHAS, null, setContentValuesCancha(nomb,direccion,tel,latitud,longitud,icono, info));
+        db.insert(TABLE_CANCHAS, null, setContentValuesCancha(id,nomb,direccion,tel,latitud,longitud,icono, info));
     }
 
     private ContentValues setContentValuesUsuario(String nomb, String clave){
@@ -88,21 +91,43 @@ public class DB_Manager {
     }
 
     public void eliminarCancha(String ID){
-        db.delete(TABLE_CANCHAS, CN_Id+"=?",new String[]{ID});
+        db.delete(TABLE_CANCHAS, CN_IdCancha+"=?",new String[]{ID});
     }
 
-    public void modificarInfoCancha(String nomb, String direccion, String tel,
+    public void modificarInfoCancha(Integer id, String nomb, String direccion, String tel,
                                     String latitud, String longitud, String Icono, String info){
-        db.update(TABLE_CANCHAS, setContentValuesCancha(nomb, direccion , tel , latitud, longitud, Icono, info),CN_Informacion+"=?", new String[]{info});
+        db.update(TABLE_CANCHAS, setContentValuesCancha(id,nomb, direccion , tel , latitud, longitud, Icono, info),CN_Informacion+"=?", new String[]{info});
     }
     public Cursor cargarCursorCanchas(){
-        String[] columnas = new String[]{CN_Id,CN_Nombre,CN_Direccion,CN_Telefono,CN_Latitud,CN_Longitud,CN_Icono,CN_Informacion};
+        String[] columnas = new String[]{CN_IdCancha,CN_Nombre,CN_Direccion,CN_Telefono,CN_Latitud,CN_Longitud,CN_Icono,CN_Informacion};
         //Retorna todos los registros de la base de datos
         return db.query(TABLE_CANCHAS, columnas, null, null, null, null, null, null);
     }
     public Cursor buscarCancha(String nombre){
-        String[] columnas = new String[]{CN_Id,CN_Nombre,CN_Direccion,CN_Telefono,CN_Latitud,CN_Longitud,CN_Icono,CN_Informacion};
+        String[] columnas = new String[]{CN_IdCancha,CN_Nombre,CN_Direccion,CN_Telefono,CN_Latitud,CN_Longitud,CN_Icono,CN_Informacion};
         return db.query(TABLE_CANCHAS, columnas, CN_Nombre +"=?", new String []{nombre}, null, null, null, null);
     }
+    public boolean buscarIdCancha(String id){
+
+        String[] columnas = new String[]{CN_IdCancha,CN_Nombre,CN_Direccion,CN_Telefono,CN_Latitud,CN_Longitud,CN_Icono,CN_Informacion};
+        if(db.query(TABLE_CANCHAS, columnas, CN_IdCancha +"=?", new String []{id}, null, null, null, null).getCount() > 0){
+            return true;
+        }
+
+        return false;
+
+    }
+    public ArrayList<String> fromCursorToArrayListString(Cursor c){
+        ArrayList<String> result = new ArrayList<String>();
+        c.moveToFirst();
+        for(int i = 0; i < c.getCount(); i++){
+            String row = c.getString(c.getColumnIndex(CN_Nombre));
+            //You can here manipulate a single string as you please
+            result.add(row);
+            c.moveToNext();
+        }
+        return result;
+    }
+
 
 }
