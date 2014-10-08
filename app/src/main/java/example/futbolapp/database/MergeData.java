@@ -1,7 +1,13 @@
 package example.futbolapp.database;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
+
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxStatus;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -9,6 +15,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,90 +24,93 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
+import example.futbolapp.R;
+import example.futbolapp.database.local.DB_Manager;
 
 /**
  * Created by Felipe on 02/10/2014.
  */
 public class MergeData {
     /* Tutorial json en read content
+     * Apoyado en :
+    * Tutorial 16: Recuperar y Consultar Registros de SQLite con Android y mostrarlos en un ListView
+    * https://www.youtube.com/watch?v=sD-pz-vKlnI
     *https://www.youtube.com/watch?v=qcotbMLjlA4&feature=youtu.be
     */
-    //static String jsonCanchas = "http://solweb.co/reservas/api/field/fields";
-    static String jsonCanchas =  "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quote%20where%20symbol%20in%20(%22YHOO%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=cbfunc";
-    static String stackCanchaId = "";
-    static String stackCanchaName = "";
-    static String stackLatitud = "";
-    static String stackLongitud = "";
-    static String stackPhone = "";
-    static String stackDirection = "";
-    static String stackInfo = "";
-    static String stackIcon = "";
+    private DB_Manager manager;
+    private AQuery aq;
+    private Context context;
+    ArrayList<String> fields;
+    public MergeData(Context context){
+        this.context = context;
+        fields = new ArrayList<String>();
+        manager = new DB_Manager(context);
 
-    public MergeData(){
-        new MyAsyncTask().execute();
     }
 
+    public void getFields(){
+        //JSON URL
+        String url = "http://solweb.co/reservas/api/field/fields";
+        //Make Asynchronous call using AJAX method and show progress gif until get info
+        aq.progress(R.id.progressBarSearch).ajax(url, JSONObject.class, this,"jsonCallback");
+    }
 
-    private class MyAsyncTask extends AsyncTask<String, String, String> {
+    public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
+        //When JSON is not null
+        Log.v("JSON", json.toString());
+        if (json != null) {
 
-        @Override
-        protected String doInBackground(String... params) {
-            DefaultHttpClient httpclient = new DefaultHttpClient(new BasicHttpParams());
-            HttpPost httppost = new HttpPost(jsonCanchas);
-
-            httppost.setHeader("Content-type","application/json");
-            InputStream inputStream = null;
-            String result = null;
-            try{
-                HttpResponse response = httpclient.execute(httppost);
-                HttpEntity entity = response.getEntity();
-                inputStream = entity.getContent();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-                StringBuilder theStringBuilder = new StringBuilder();
-                String line = null;
-                while((line = reader.readLine()) != null){
-                    theStringBuilder.append(line+"\n");
-                }
-                result = theStringBuilder.toString();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            finally {
-                try{
-                    if(inputStream != null) inputStream.close();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-            JSONObject jsonObject;
-
+            String jsonResponse = "";
             try {
-                Log.v("JSONParser RESULT", result);
-                jsonObject = new JSONObject(result);
-                JSONObject fieldJsonObject = jsonObject.getJSONObject("query");
-                //JSONObject querJsonObject = fieldJsonObject.getJSONObject("query");
+                //Get json as Array
+                JSONArray jsonArray = json.getJSONArray("field");
+                DB_Manager manager = new DB_Manager(context);
+                if (jsonArray != null) {
+                    int len = jsonArray.length();
+                    for (int i = 0; i < len; i++) {
+                        //Get the name of the field from array index
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        fields.add(jsonObject.getString("name"));
 
-                stackCanchaName = fieldJsonObject.getString("name");
-                stackLatitud = fieldJsonObject.getString("latitude");
-                stackLongitud = fieldJsonObject.getString("length");
-                stackDirection = fieldJsonObject.getString("url");
-                stackIcon = fieldJsonObject.getString("icon");
-                stackPhone = fieldJsonObject.getString("phone");
-
+                        //SQLite
+                        if(manager.buscarIdCancha(jsonObject.getString("id")) == false)
+                        {
+                            manager.insertarCancha(Integer.parseInt(jsonObject.getString("id")), jsonObject.getString("name"), jsonObject.getString("address"),
+                                    jsonObject.getString("phone"), jsonObject.getString("latitude"), jsonObject.getString("length"),
+                                    jsonObject.getString("icon"), jsonObject.getString("description"));
+                        }
+                    }
+                }
             } catch (JSONException e) {
-                e.printStackTrace();
+                // TODO Auto-generated catch block
+                Toast.makeText(aq.getContext(), "Error in parsing JSON", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
-
-            return null;
+            //ArrayList a = manager.fromCursorToArrayListString(manager.cargarCursorCanchas());
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, a);
+            //Log.v("numero de canhaS----- ", Integer.toString(a.size()));
+            //listView.setAdapter(adapter);
+            //autoComplete.setAdapter(new ArrayAdapter<String>(this,R.layout.list_details, a));
         }
-        @Override
-        protected void onPostExecute(String result) {
-            //Show getted information of fields
+        //When JSON is null
+        else {
+            //When response code is 500 (Internal Server Error)
+            if(status.getCode() == 500){
+                Toast.makeText(aq.getContext(),"Server is busy or down. Try again!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is 404 (Not found)
+            else if(status.getCode() == 404){
+                Toast.makeText(aq.getContext(),"Resource not found!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is other 500 or 404
+            else{
+                Toast.makeText(aq.getContext(),"Unexpected Error occured",Toast.LENGTH_SHORT).show();
+            }
         }
-
     }
+
+
 }

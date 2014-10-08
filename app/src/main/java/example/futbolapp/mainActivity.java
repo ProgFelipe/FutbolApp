@@ -2,6 +2,7 @@ package example.futbolapp;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -14,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import example.futbolapp.database.local.DB_Manager;
+
 /**
  * Created by Usuario on 11/09/2014.
  */
@@ -23,6 +26,8 @@ public class mainActivity  extends ActionBarActivity {
     private ListView navList;
     private CharSequence mTitle;
     private ActionBarDrawerToggle drawerToggle;
+    private Cursor cursor;
+    private DB_Manager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -31,7 +36,6 @@ public class mainActivity  extends ActionBarActivity {
 
 
         mTitle = getTitle(); // Get current title
-
         this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         this.navList = (ListView) findViewById(R.id.left_drawer);
 
@@ -72,6 +76,12 @@ public class mainActivity  extends ActionBarActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        /*
+         * Get from database news and other important info
+         */
+        DB_Manager manager = new DB_Manager(this);
+        this.cursor = manager.cargarCursorCanchas();
     }
 
     private class DrawerItemClickListener implements

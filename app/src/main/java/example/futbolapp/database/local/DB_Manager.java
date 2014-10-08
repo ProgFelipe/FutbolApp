@@ -107,8 +107,12 @@ public class DB_Manager {
         String[] columnas = new String[]{CN_IdCancha,CN_Nombre,CN_Direccion,CN_Telefono,CN_Latitud,CN_Longitud,CN_Icono,CN_Informacion};
         return db.query(TABLE_CANCHAS, columnas, CN_Nombre +"=?", new String []{nombre}, null, null, null, null);
     }
-    public boolean buscarIdCancha(String id){
 
+    public Cursor buscarCanchaById(String id){
+        String[] columnas = new String[]{CN_IdCancha,CN_Nombre,CN_Direccion,CN_Telefono,CN_Latitud,CN_Longitud,CN_Icono,CN_Informacion};
+        return db.query(TABLE_CANCHAS, columnas, CN_IdCancha +"=?", new String []{id}, null, null, null, null);
+    }
+    public boolean buscarIdCancha(String id){
         String[] columnas = new String[]{CN_IdCancha,CN_Nombre,CN_Direccion,CN_Telefono,CN_Latitud,CN_Longitud,CN_Icono,CN_Informacion};
         if(db.query(TABLE_CANCHAS, columnas, CN_IdCancha +"=?", new String []{id}, null, null, null, null).getCount() > 0){
             return true;

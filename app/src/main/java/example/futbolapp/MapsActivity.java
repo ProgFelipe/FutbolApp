@@ -1,21 +1,25 @@
 package example.futbolapp;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import example.futbolapp.database.local.DB_Manager;
 
-public class MapsActivity extends FragmentActivity {
+public class MapsActivity extends FragmentActivity implements OnInfoWindowClickListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     // latitude and longitude
@@ -47,6 +51,7 @@ public class MapsActivity extends FragmentActivity {
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        mMap.setOnInfoWindowClickListener(this);
     }
 
     @Override
@@ -55,21 +60,6 @@ public class MapsActivity extends FragmentActivity {
         setUpMapIfNeeded();
     }
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -87,13 +77,14 @@ public class MapsActivity extends FragmentActivity {
                 while (c.isAfterLast() == false) {
                     markers[i] = new MarkerOptions().position(new LatLng(Double.parseDouble(c.getString(4)), Double.parseDouble(c.getString(5))))
                             .title(c.getString(1))
-                            .snippet(c.getString(3) + "\n" + c.getString(7));
+                            .snippet(c.getString(3)+ "\n"+ c.getString(7))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                     i++;
                     c.moveToNext();
                 }
             }
 
-;
+
             // Changing marker icon
             //marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.arco_128x128));
 
@@ -105,10 +96,6 @@ public class MapsActivity extends FragmentActivity {
             //mMap user location and icon location
             mMap.setMyLocationEnabled(true);
 
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-            }
         }
     }
 
@@ -118,7 +105,21 @@ public class MapsActivity extends FragmentActivity {
      * <p>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
-    private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
+        Intent intent = new Intent(getApplicationContext(), fieldActivity.class);
+        Cursor c = manager.buscarCancha(marker.getTitle());
+        if(c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            intent.putExtra("fieldID", c.getString(0));
+        }
+        startActivity(intent);
+        Toast.makeText(getBaseContext(),
+                "Seleccionó " + marker.getTitle(),
+                Toast.LENGTH_SHORT).show();
     }
+
+
 }

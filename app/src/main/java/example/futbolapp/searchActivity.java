@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 //SQLite
+import example.futbolapp.database.MergeData;
 import example.futbolapp.database.local.DB_Manager;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
@@ -46,8 +47,6 @@ public class searchActivity extends ActionBarActivity {
 
     ArrayList<String> fields;
 
-
-
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.busqueda);
@@ -57,6 +56,7 @@ public class searchActivity extends ActionBarActivity {
         listView = (ListView)findViewById(R.id.listViewSearch);
         //autoComplete = (AutoCompleteTextView)findViewById(R.id.autocomplete);
 
+        //Cambia de vista al hacer click en un item de la lista de canchas
         listView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
@@ -75,6 +75,7 @@ public class searchActivity extends ActionBarActivity {
                     }
                 }
         );
+        //Agrega a la vista de busqueda los metodos al buscar
         searchView = (SearchView) findViewById(R.id.searchFieldNameView);
         searchView.setQueryHint("Ingresa el nombre");
         //Buscar Cancha por nombre al hacer click en boton buscar
@@ -97,9 +98,12 @@ public class searchActivity extends ActionBarActivity {
 
         //SQlite
         manager = new DB_Manager(this);
-        getFields();
-        //Text view two_line_list por defecto de android
+        //getFields();
+        //Busca cambios en la base de datos local con respecto a la externa
+        new MergeData(this);
 
+
+        //Text view two_line_list por defecto de android
         cursor = manager.cargarCursorCanchas();
         String[] from = new String[]{manager.CN_Nombre,manager.CN_Telefono};
         int [] to = new int[]{android.R.id.text1,android.R.id.text2};
