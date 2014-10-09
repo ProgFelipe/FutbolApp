@@ -7,12 +7,15 @@
     <string name="title_activity_busqueda_tiempo">Busqueda - Fecha y hora</string>
     <string name="title_activity_cancha">Cancha</string>
     <string name="title_activity_maps">Canchas cercanas</string>
+    <string name="title_activity_reserva">Reservar</string>
 
     <string name="btn_buscar">Buscar Canchas</string>
     <string name="btn_mapa">Canchas en mapa</string>
     <string name="btn_programa">Eventos</string>
 
-
+    <string name="usuario">usuario</string>
+    <string name="contraseña">constraseña</string>
+    <string name="AppID">IDFACEBOOK</string>
     <string name="largeText">
         Lorem ipsum ad his scripta blandit partiendo, eum fastidii accumsan euripidis in, eum liber hendrerit an. Qui ut wisi vocibus suscipiantur, quo dicit ridens inciderint id. Quo mundi lobortis reformidans eu, legimus senserit definiebas an eos. Eu sit tincidunt incorrupte definitionem, vis mutat affert percipit cu, eirmod consectetuer signiferumque eu per. In usu latine equidem dolores. Quo no falli viris intellegam, ut fugit veritus placerat per.
 

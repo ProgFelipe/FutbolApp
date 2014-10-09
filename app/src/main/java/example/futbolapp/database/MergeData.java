@@ -54,7 +54,7 @@ public class MergeData {
         //JSON URL
         String url = "http://solweb.co/reservas/api/field/fields";
         //Make Asynchronous call using AJAX method and show progress gif until get info
-        aq.progress(R.id.progressBarSearch).ajax(url, JSONObject.class, this,"jsonCallback");
+        aq.ajax(url, JSONObject.class, this,"jsonCallback");
     }
 
     public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
