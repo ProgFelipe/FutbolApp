@@ -1,5 +1,7 @@
 package example.futbolapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -7,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import example.futbolapp.database.local.DB_Manager;
 
@@ -34,7 +38,8 @@ public class mainActivity  extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actividad_principal);
 
-
+        TextView newstext = (TextView)findViewById(R.id.textViewMain);
+        newstext.setMovementMethod(new ScrollingMovementMethod());
         mTitle = getTitle(); // Get current title
         this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         this.navList = (ListView) findViewById(R.id.left_drawer);
@@ -91,6 +96,23 @@ public class mainActivity  extends ActionBarActivity {
         {
             selectItem(position);
         }
+    }
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Saliendo CanchaFinder")
+                .setMessage("¿Esta seguro que desea salir?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {

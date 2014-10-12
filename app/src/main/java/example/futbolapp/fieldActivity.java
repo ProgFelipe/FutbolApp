@@ -1,11 +1,13 @@
 package example.futbolapp;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +26,7 @@ public class fieldActivity extends ActionBarActivity {
     private TextView direccionCancha;
     private TextView telCancha;
     private TextView infoCancha;
-    private Button buttonReservar;
+    private Button btnDisp;
     private ImageView imgCancha;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,8 @@ public class fieldActivity extends ActionBarActivity {
         telCancha = (TextView) findViewById(R.id.telCancha);
         infoCancha = (TextView) findViewById(R.id.infoCancha);
         imgCancha = (ImageView) findViewById(R.id.ImgCancha);
+        btnDisp = (Button) findViewById(R.id.btnDisponibilidad);
+
         //Get Database cursor
         manager = new DB_Manager(this);
         Cursor c = manager.buscarCanchaById(value);
@@ -62,6 +66,13 @@ public class fieldActivity extends ActionBarActivity {
             Toast.makeText(getApplicationContext(),"A ocurrido un error con la aplicacion", Toast.LENGTH_SHORT).show();
         }
 
+        btnDisp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), reservationActivity.class);
+                startActivity(intent);
+            }
+        });
         //Set Elements data from database
 
 

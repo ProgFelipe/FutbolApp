@@ -1,5 +1,6 @@
 package example.futbolapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -44,9 +45,20 @@ public class MainFragment extends Fragment {
     private Session.StatusCallback callback = new Session.StatusCallback() {
         @Override
         public void call(Session session, SessionState state, Exception exception) {
-            onSessionStateChange(session, state, exception);
+
+            if(state.isOpened()){
+                Intent intent = new Intent(getActivity(), mainActivity.class);
+                startActivity(intent);
+            }else {
+                onSessionStateChange(session, state, exception);
+            }
         }
     };
+
+    public boolean isLoggedIn() {
+        Session session = Session.getActiveSession();
+        return (session != null && session.isOpened());
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,5 +101,28 @@ public class MainFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         uiHelper.onSaveInstanceState(outState);
+    }
+
+    /**
+     * Logout From Facebook
+     */
+    public static void callFacebookLogout(Context context) {
+
+        Session session = Session.getActiveSession();
+        if (session != null) {
+
+            if (!session.isClosed()) {
+                session.closeAndClearTokenInformation();
+                //clear your preferences if saved
+            }
+        } else {
+
+            session = new Session(context);
+            Session.setActiveSession(session);
+
+            session.closeAndClearTokenInformation();
+            //clear your preferences if saved
+        }
+
     }
 }
