@@ -100,7 +100,8 @@ public class searchActivity extends ActionBarActivity {
         manager = new DB_Manager(this);
         //getFields();
         //Busca cambios en la base de datos local con respecto a la externa
-        new MergeData(this);
+        MergeData merge = new MergeData(this);
+        merge.getFields();
 
 
         //Text view two_line_list por defecto de android

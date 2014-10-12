@@ -47,14 +47,14 @@ public class MergeData {
         this.context = context;
         fields = new ArrayList<String>();
         manager = new DB_Manager(context);
-
+        aq = new AQuery(context);
     }
 
     public void getFields(){
         //JSON URL
         String url = "http://solweb.co/reservas/api/field/fields";
         //Make Asynchronous call using AJAX method and show progress gif until get info
-        aq.ajax(url, JSONObject.class, this,"jsonCallback");
+        aq.ajax(url, JSONObject.class, context,"jsonCallback");
     }
 
     public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
@@ -66,7 +66,6 @@ public class MergeData {
             try {
                 //Get json as Array
                 JSONArray jsonArray = json.getJSONArray("field");
-                DB_Manager manager = new DB_Manager(context);
                 if (jsonArray != null) {
                     int len = jsonArray.length();
                     for (int i = 0; i < len; i++) {
