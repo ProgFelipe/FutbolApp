@@ -68,29 +68,33 @@ public class MapsActivity extends FragmentActivity implements OnInfoWindowClickL
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
 
-            // create marker
-            MarkerOptions [] markers = new MarkerOptions[c.getCount()];
+            // create markers of soccer fields
+            if(c.getCount() != 0) {
+                MarkerOptions[] markers = new MarkerOptions[c.getCount()];
 
-            c.moveToFirst();
-            int i = 0;
-            if(c.getString(1) != null || c.getString(4) != null || c.getString(5) != null || c.getString(3) != null) {
-                while (c.isAfterLast() == false) {
-                    markers[i] = new MarkerOptions().position(new LatLng(Double.parseDouble(c.getString(4)), Double.parseDouble(c.getString(5))))
-                            .title(c.getString(1))
-                            .snippet(c.getString(3)+ "\n"+ c.getString(7))
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                    i++;
-                    c.moveToNext();
+                c.moveToFirst();
+                int i = 0;
+                if (c.getString(1) != null || c.getString(4) != null || c.getString(5) != null || c.getString(3) != null) {
+                    while (c.isAfterLast() == false) {
+                        if(c.getString(7).matches("null")){
+                            markers[i] = new MarkerOptions().position(new LatLng(Double.parseDouble(c.getString(4)), Double.parseDouble(c.getString(5))))
+                                    .title(c.getString(1))
+                                    .snippet(c.getString(3))
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        }else{
+                        markers[i] = new MarkerOptions().position(new LatLng(Double.parseDouble(c.getString(4)), Double.parseDouble(c.getString(5))))
+                                .title(c.getString(1))
+                                .snippet(c.getString(3) + "\n" + c.getString(7))
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        }
+                        i++;
+                        c.moveToNext();
+                    }
                 }
-            }
-
-
-            // Changing marker icon
-            //marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.arco_128x128));
-
-            // adding marker
-            for(i = 0; i < markers.length; i++){
-                mMap.addMarker(markers[i]);
+                // adding marker
+                for (i = 0; i < markers.length; i++) {
+                    mMap.addMarker(markers[i]);
+                }
             }
             mMap.getUiSettings().setCompassEnabled(true);
             //mMap user location and icon location

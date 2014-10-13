@@ -2,6 +2,13 @@ package example.futbolapp.database.external;
 
 import android.util.Log;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -50,5 +57,29 @@ public class serverConnection {
 
     public void desconectar(){
         connection = null;
+    }
+
+    public void getHorasDisponibles(){
+        try {
+            // open a connection to the site
+            URL url = new URL("http://solweb.co/reservas/api/reservations/availability");
+            URLConnection con = url.openConnection();
+            // activate the output
+            con.setDoOutput(true);
+            PrintStream ps = new PrintStream(con.getOutputStream());
+            // send your parameters to your site
+            ps.print("id=1");
+
+            // we have to get the input stream in order to actually send the request
+            con.getInputStream();
+
+            // close the print stream
+            ps.close();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

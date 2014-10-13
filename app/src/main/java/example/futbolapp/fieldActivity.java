@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -52,10 +53,29 @@ public class fieldActivity extends ActionBarActivity {
         try {
             c.moveToFirst();
             if(c != null && c.getCount() > 0){
-                nombreCancha.setText(c.getString(1));
-                direccionCancha.setText(c.getString(2));
-                telCancha.setText(c.getString(3));
-                infoCancha.setText(c.getString(7));
+                if(!c.getString(1).matches("null")){
+                    nombreCancha.setText(c.getString(1));
+                }
+                if(c.getString(2).matches("null")) {
+                    direccionCancha.setText("Dirección no disponible");
+                    direccionCancha.setTextColor(Color.RED);
+                }else{
+                    direccionCancha.setText(c.getString(2));
+                }
+                if(c.getString(3).matches("null")) {
+                    telCancha.setText("Telefono no disponible");
+                    telCancha.setTextColor(Color.RED);
+
+                }else{
+                    telCancha.setText(c.getString(3));
+                }
+                if(c.getString(7).matches("null")) {
+                    infoCancha.setText("Información adicional no disponible");
+                    infoCancha.setTextColor(Color.RED);
+                }else{
+                    infoCancha.setText(c.getString(7));
+
+                }
                 /*if(c.getString(6) != null){
                 URL newurl = new URL(c.getString(6));
                 Bitmap mIcon_val = BitmapFactory.decodeStream(newurl.openConnection().getInputStream());

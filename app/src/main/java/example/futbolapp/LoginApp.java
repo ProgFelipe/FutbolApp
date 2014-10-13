@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,9 +22,9 @@ public class LoginApp extends FragmentActivity {
     private String passw;
     private String persona = "David";
     private String contrasenia = "12345";
-    private TextView aux;
-    private TextView aux1;
-
+    public EditText usuario;
+    public EditText password;
+    public Button btnlogin;
     private Facebook fb;
     private MainFragment mainFragment;
 
@@ -41,36 +44,39 @@ public class LoginApp extends FragmentActivity {
             mainFragment = (MainFragment) getSupportFragmentManager()
                     .findFragmentById(android.R.id.content);
         }
+        setContentView(R.layout.activity_login_app);
 
-        if(!mainFragment.isLoggedIn())
+       if(!mainFragment.isLoggedIn())
         {
             setContentView(R.layout.activity_login_app);
         }else{
-            Intent intent = new Intent(this, mainActivity.class);
-            startActivity(intent);
+           setContentView(R.layout.actividad_principal);
         }
-
-        TextView usuario = (TextView) findViewById(R.id.usuario);
-        TextView password = (TextView) findViewById(R.id.password);
-
-        aux = usuario;
-        aux1 = password;
-
     }
 
     public void login(View view)
     {
-        user = String.valueOf(aux.getText());
-        passw = String.valueOf(aux1.getText());
-
-        //if(user.equals(persona) && passw.equals(contrasenia))
-        //{
+        /*usuario = (EditText)findViewById(R.id.usuarioLogin);
+        password = (EditText)findViewById(R.id.passwordLogin);
+        usuario.setText("Madefuquer");
+        user = usuario.getText().toString();
+        if (user.matches("")) {
+            Toast.makeText(this, "You did not enter a username", Toast.LENGTH_SHORT).show();
+        }
+        passw = password.getText().toString();
+        Log.v("User", usuario.getText().toString());
+        Log.v("Password ", passw);
+        Toast.makeText(getApplicationContext(), "usuario"+user, Toast.LENGTH_SHORT).show();
+        if(user.trim().equals(persona) && passw.trim().equals(contrasenia))
+        {
         Intent intent = new Intent(this, mainActivity.class);
         startActivity(intent);
-        //}else
-        //{
-        //  Toast.makeText(getApplicationContext(), "Verifique los datos", Toast.LENGTH_SHORT).show();
-        //}
+        }else
+        {
+          Toast.makeText(getApplicationContext(), "Verifique los datos", Toast.LENGTH_SHORT).show();
+        }*/
+        Intent intent = new Intent(this, mainActivity.class);
+        startActivity(intent);
     }
 
 
