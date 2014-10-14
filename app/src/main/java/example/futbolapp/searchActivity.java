@@ -1,5 +1,7 @@
 package example.futbolapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 public class searchActivity extends ActionBarActivity {
     private Cursor cursor;
     private DB_Manager manager;
+    private boolean searchDone;
     private ListView listView;
     SimpleCursorAdapter adapter;
     private SearchView searchView ;
@@ -50,6 +53,7 @@ public class searchActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.busqueda);
+        searchDone = false;
         //Instantiate AQuery Object
         aq = new AQuery(this);
         fields = new ArrayList<String>();
@@ -85,6 +89,7 @@ public class searchActivity extends ActionBarActivity {
                     @Override
                     public boolean onQueryTextSubmit(String s) {
                         //startActivity(new Intent(searchActivity.this, eventsActivity.class));
+                        searchDone = true;
                         new BuscarTask().execute();
                         return false;
                     }
@@ -96,6 +101,10 @@ public class searchActivity extends ActionBarActivity {
                     }
                 });
 
+        getFields();
+        }
+
+    public void getFields(){
         //SQlite
         manager = new DB_Manager(this);
         //getFields();
@@ -110,8 +119,7 @@ public class searchActivity extends ActionBarActivity {
         int [] to = new int[]{android.R.id.text1,android.R.id.text2};
         adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,cursor, from, to,0);
         listView.setAdapter(adapter);
-        }
-
+    }
     private class BuscarTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -128,6 +136,15 @@ public class searchActivity extends ActionBarActivity {
             adapter.changeCursor(cursor);
             Toast.makeText(getApplicationContext(),"Busqueda Finalizada ...", Toast.LENGTH_SHORT).show();
             //Show getted information of fields
+        }
+    }
+    @Override
+    public void onBackPressed() {
+        if(searchDone){
+            searchDone = false;
+            getFields();
+        }else{
+            finish();
         }
     }
 }
