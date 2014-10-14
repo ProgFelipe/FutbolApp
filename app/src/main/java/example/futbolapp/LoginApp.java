@@ -10,11 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.android.Facebook;
-
 
 public class LoginApp extends FragmentActivity {
 
@@ -32,7 +30,7 @@ public class LoginApp extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
             // Add the fragment on initial activity setup
             mainFragment = new MainFragment();
             getSupportFragmentManager()
@@ -43,22 +41,21 @@ public class LoginApp extends FragmentActivity {
             // Or set the fragment from restored state info
             mainFragment = (MainFragment) getSupportFragmentManager()
                     .findFragmentById(android.R.id.content);
-        }
+        }*/
         setContentView(R.layout.activity_login_app);
 
-       if(!mainFragment.isLoggedIn())
+       /*if(!mainFragment.isLoggedIn())
         {
             setContentView(R.layout.activity_login_app);
         }else{
            setContentView(R.layout.actividad_principal);
-        }
+        }*/
     }
 
     public void login(View view)
     {
         /*usuario = (EditText)findViewById(R.id.usuarioLogin);
         password = (EditText)findViewById(R.id.passwordLogin);
-        usuario.setText("Madefuquer");
         user = usuario.getText().toString();
         if (user.matches("")) {
             Toast.makeText(this, "You did not enter a username", Toast.LENGTH_SHORT).show();

@@ -15,23 +15,31 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <TwoLineListItem
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="130dp"
-        android:layout_above="@+id/btnReservar"></TwoLineListItem>
-
-    <EditText
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="date"
-        android:ems="10"
-        android:id="@+id/editText"
-        android:layout_alignParentTop="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Seleccione una hora y luego click en reservar"
+        android:id="@+id/txtReservar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_horas"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/btnReservar"
+        android:layout_below="@+id/btnDia" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selecciona la fecha"
+        android:id="@+id/btnDia"
+        android:layout_below="@+id/txtReservar"
+        android:onClick="showDatePickerDialog"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -60,20 +60,20 @@ public class fieldActivity extends ActionBarActivity {
                     direccionCancha.setText("Dirección no disponible");
                     direccionCancha.setTextColor(Color.RED);
                 }else{
-                    direccionCancha.setText(c.getString(2));
+                    direccionCancha.setText("Dirección: "+c.getString(2));
                 }
                 if(c.getString(3).matches("null")) {
                     telCancha.setText("Telefono no disponible");
                     telCancha.setTextColor(Color.RED);
 
                 }else{
-                    telCancha.setText(c.getString(3));
+                    telCancha.setText("Teléfono: "+c.getString(3));
                 }
                 if(c.getString(7).matches("null")) {
                     infoCancha.setText("Información adicional no disponible");
                     infoCancha.setTextColor(Color.RED);
                 }else{
-                    infoCancha.setText(c.getString(7));
+                    infoCancha.setText("Información adicional: "+c.getString(7));
 
                 }
                 /*if(c.getString(6) != null){
