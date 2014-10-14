@@ -74,6 +74,7 @@ public class LoginApp extends FragmentActivity {
         }*/
         Intent intent = new Intent(this, mainActivity.class);
         startActivity(intent);
+        finish();
     }
 
 

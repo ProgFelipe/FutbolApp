@@ -157,9 +157,8 @@ public class searchActivity extends ActionBarActivity {
 
     public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
         //When JSON is not null
-        Log.v("JSON", json.toString());
         if (json != null) {
-
+            //Log.v("JSON", json.toString());
             String jsonResponse = "";
             try {
                 //Get json as Array
@@ -187,12 +186,8 @@ public class searchActivity extends ActionBarActivity {
                 Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
             cursor = manager.cargarCursorCanchas();
-
-
             String[] from = new String[]{manager.CN_Nombre,manager.CN_Telefono};
-
             int [] to = new int[]{android.R.id.text1,android.R.id.text2};
-
             adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,cursor, from, to,0);
             listView.setAdapter(adapter);
         }
@@ -210,6 +205,11 @@ public class searchActivity extends ActionBarActivity {
             else{
                 Toast.makeText(aq.getContext(),"Unexpected Error occured",Toast.LENGTH_SHORT).show();
             }
+            cursor = manager.cargarCursorCanchas();
+            String[] from = new String[]{manager.CN_Nombre,manager.CN_Telefono};
+            int [] to = new int[]{android.R.id.text1,android.R.id.text2};
+            adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,cursor, from, to,0);
+            listView.setAdapter(adapter);
         }
     }
 
