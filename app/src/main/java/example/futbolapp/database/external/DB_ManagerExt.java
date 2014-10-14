@@ -1,6 +1,8 @@
 package example.futbolapp.database.external;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.internal.is;
 
@@ -27,41 +29,32 @@ import java.util.List;
 /**
  * Created by Felipegi on 12/09/2014.
  * Apoyo
- * http://sampleprogramz.com/android/mysqldb.php
+ * http://www.androidsnippets.com/executing-a-http-post-request-with-httpclient
  */
 public class DB_ManagerExt {
 
-
-    //Obtiene las horas disponibles por cancha
-    public void getFieldDisponibility(String fieldID){
-
-
-    }
     //Obtiene las canchas por hora disponible
-    public void getFieldsByDate(String date){
-
+    public void getFieldsByDate(String date, String time){
             // Create a new HttpClient and Post Header
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://www.solweb.co/reservas/api_movil/getAvailabilityByField.php");
-
             try {
                 // Add your data
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
                 nameValuePairs.add(new BasicNameValuePair("id", date));
                 nameValuePairs.add(new BasicNameValuePair("stringdata", "AndDev is Cool!"));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
                 // Execute HTTP Post Request
                 HttpResponse response = httpclient.execute(httppost);
-
             } catch (ClientProtocolException e) {
                 // TODO Auto-generated catch block
             } catch (IOException e) {
                 // TODO Auto-generated catch block
             }
     }
-//Check if field is available in a setted date and time
-    public boolean checkFieldDisponibility(String fieldID,String hour, String day, String month, String year){
+
+    //Check if field is available in a setted date and time
+    public boolean checkDisponibility(Context context, String fieldID,String hour, String day, String month, String year){
         boolean canReserve = false;
         Log.v("RESPUESRA RESPUESRA RESPA", "checkeando");
         // Create a new HttpClient and Post Header
@@ -84,13 +77,12 @@ public class DB_ManagerExt {
             Log.v("RESPUESRA RESPUESRA RESPA", response.toString());
             Log.v("RESPUESRA RESPUESRA RESPA", response.toString());
             Log.v("RESPUESRA RESPUESRA RESPA", response.toString());
-            if(response.toString() == "true"){
-                canReserve = true;
-            }
         } catch (ClientProtocolException e) {
             // TODO Auto-generated catch block
+            Toast.makeText(context, "Error"+e, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            Toast.makeText(context,"Error "+e, Toast.LENGTH_SHORT).show();
         }
 
             if(canReserve){
@@ -98,6 +90,7 @@ public class DB_ManagerExt {
             }
         return canReserve;
     }
+
     public void setReservation(String fieldID,String hour, String day, String month, String year ){
 
         // Create a new HttpClient and Post Header

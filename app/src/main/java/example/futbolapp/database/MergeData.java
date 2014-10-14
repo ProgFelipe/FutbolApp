@@ -39,22 +39,22 @@ public class MergeData {
     * https://www.youtube.com/watch?v=sD-pz-vKlnI
     *https://www.youtube.com/watch?v=qcotbMLjlA4&feature=youtu.be
     */
-    private DB_Manager manager;
-    private AQuery aq;
-    private Context context;
+    public DB_Manager manager;
+    public AQuery aq;
+    public Context context;
     ArrayList<String> fields;
-    public MergeData(Context context){
+    public MergeData(Context context, AQuery a, DB_Manager db){
         this.context = context;
         fields = new ArrayList<String>();
-        manager = new DB_Manager(context);
-        aq = new AQuery(context);
+        manager = db;
+        aq = a;
     }
 
-    public void getFields(){
+    public void getCanchas(){
         //JSON URL
         String url = "http://solweb.co/reservas/api/field/fields";
         //Make Asynchronous call using AJAX method and show progress gif until get info
-        aq.ajax(url, JSONObject.class, context,"jsonCallback");
+        aq.progress(R.id.progressBarSearch).ajax(url, JSONObject.class, this,"jsonCallback");
     }
 
     public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
@@ -73,7 +73,7 @@ public class MergeData {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         fields.add(jsonObject.getString("name"));
 
-                        //SQLite
+                        //SQLite check if field is in the local database
                         if(manager.buscarIdCancha(jsonObject.getString("id")) == false)
                         {
                             manager.insertarCancha(Integer.parseInt(jsonObject.getString("id")), jsonObject.getString("name"), jsonObject.getString("address"),
@@ -88,11 +88,6 @@ public class MergeData {
             } catch (Exception e) {
                 Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
-            //ArrayList a = manager.fromCursorToArrayListString(manager.cargarCursorCanchas());
-            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, a);
-            //Log.v("numero de canhaS----- ", Integer.toString(a.size()));
-            //listView.setAdapter(adapter);
-            //autoComplete.setAdapter(new ArrayAdapter<String>(this,R.layout.list_details, a));
         }
         //When JSON is null
         else {

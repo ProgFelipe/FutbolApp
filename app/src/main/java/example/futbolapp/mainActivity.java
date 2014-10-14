@@ -82,11 +82,6 @@ public class mainActivity  extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        /*
-         * Get from database news and other important info
-         */
-        DB_Manager manager = new DB_Manager(this);
-        this.cursor = manager.cargarCursorCanchas();
     }
 
     private class DrawerItemClickListener implements

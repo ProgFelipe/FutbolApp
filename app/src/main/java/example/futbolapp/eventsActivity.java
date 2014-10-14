@@ -79,19 +79,29 @@ public class eventsActivity extends ActionBarActivity {
         // Create a new fragment and specify the option to show based on
         // position
         switch (position) {
-            case 0:
+            /*case 0:
                 ActionBarActivity prg = new eventsActivity();
                 Bundle args = new Bundle();
                 startActivity(new Intent(this, eventsActivity.class));
+                break;*/
+            case 0:
                 break;
             case 1:
                 ActionBarActivity bsc = new searchActivity();
                 new Bundle();
+                finish();
                 startActivity(new Intent(this, searchActivity.class));
                 break;
             case 2:
+                ActionBarActivity srcTime = new searchInTime();
+                new Bundle();
+                finish();
+                startActivity(new Intent(this, searchInTime.class));
+                break;
+            case 3:
                 MapsActivity map = new MapsActivity();
                 new Bundle();
+                finish();
                 startActivity(new Intent(this, MapsActivity.class));
                 break;
         }
