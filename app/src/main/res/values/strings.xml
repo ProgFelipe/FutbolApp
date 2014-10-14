@@ -16,7 +16,7 @@
     <string name="loginText"></string>
     <string name="usuario">usuario</string>
     <string name="contraseña">constraseña</string>
-    <string name="title_activity_login">Login</string>
+    <string name="title_activity_login">CanchaFinder</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="AppID">720240891383686</string>
