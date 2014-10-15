@@ -13,12 +13,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import example.futbolapp.View.CreateFragment;
 import example.futbolapp.View.DrawerItemCustomAdapter;
 import example.futbolapp.View.ObjectDrawerItem;
 
 /**
- * Created by Usuario on 11/09/2014.
+ * Created by FelipeGI on 11/09/2014.
  */
 public class eventsActivity extends ActionBarActivity {
     private String[] mNavigationDrawerItemTitles;
@@ -114,21 +113,28 @@ public class eventsActivity extends ActionBarActivity {
 
             switch (position) {
                 case 0:
+                    new eventsActivity();
+                    new Bundle();
+                    this.startActivity(new Intent(this, eventsActivity.class));
+                    finish();
                     break;
                 case 1:
                     new searchActivity();
                     new Bundle();
                     this.startActivity(new Intent(this, searchActivity.class));
+                    finish();
                     break;
                 case 2:
                     new searchInTime();
                     new Bundle();
                     this.startActivity(new Intent(this, searchInTime.class));
+                    finish();
                     break;
                 case 3:
                     new MapsActivity();
                     new Bundle();
                     this.startActivity(new Intent(this, MapsActivity.class));
+                    finish();
                     break;
                 default:
                     break;
