@@ -3,6 +3,8 @@ package example.futbolapp;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +12,8 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.format.DateFormat;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,54 +23,67 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
+import example.futbolapp.View.DrawerItemCustomAdapter;
+import example.futbolapp.View.ObjectDrawerItem;
+
 /**
  * Created by Felipe on 08/10/2014.
  */
 public class searchInTime extends ActionBarActivity {
+    private String[] mNavigationDrawerItemTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    ActionBarDrawerToggle mDrawerToggle;
+    private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private DrawerLayout drawerLayout;
-    private ListView navList;
-    private ActionBarDrawerToggle drawerToggle;
     //
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.busqueda_horario);
-        mTitle = getTitle(); // Get current title
-        this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layoutBsqTime);
-        this.navList = (ListView) findViewById(R.id.left_drawerTime);
+        //Drawer
+        mTitle = mDrawerTitle = getTitle();
 
-        // Load an array of options names
-        final String[] names = getResources().getStringArray(
-                R.array.nav_options);
+        mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        // Set previous array as adapter of the list
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, names);
-        navList.setAdapter(adapter);
-        navList.setOnItemClickListener(new DrawerItemClickListener());
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-                R.drawable.ic_navigation_drawer, R.string.open_drawer,
-                R.string.close_drawer) {
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[4];
 
-            /**
-             * Called when a drawer has settled in a completely closed state.
-             */
+        drawerItem[0] = new ObjectDrawerItem(android.R.drawable.ic_menu_today, getResources().getString(R.string.nav0));
+        drawerItem[1] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav1));
+        drawerItem[2] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav2));
+        drawerItem[3] = new ObjectDrawerItem(android.R.drawable.ic_dialog_map, getResources().getString(R.string.nav3));
+
+        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.listview_item_row, drawerItem);
+        mDrawerList.setAdapter(adapter);
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                R.drawable.ic_drawer,
+                R.string.drawer_open,
+                R.string.drawer_close
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle(mTitle);
-                // creates call to onPrepareOptionsMenu()
-                supportInvalidateOptionsMenu();
+                super.onDrawerClosed(view);
+                getActionBar().setTitle(mTitle);
             }
 
-            /**
-             * Called when a drawer has settled in a completely open state.
-             */
+            /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle("Selecciona opción");
-                // creates call to onPrepareOptionsMenu()
-                supportInvalidateOptionsMenu();
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(mDrawerTitle);
             }
         };
-        //
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 
     }
 
@@ -119,44 +136,84 @@ public class searchInTime extends ActionBarActivity {
             // Do something with the time chosen by the user
         }
     }
-    private class DrawerItemClickListener implements
-            ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
-            selectItem(position);
+
+    //Drawer methods
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
         }
 
+        return super.onOptionsItemSelected(item);
     }
-    /** Swaps fragments in the main content view */
-    private void selectItem(int position) {
-        // Get text from resources
-        mTitle = getResources().getStringArray(R.array.nav_options)[position];
 
-        // Create a new fragment and specify the option to show based on
-        // position
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getActionBar().setTitle(mTitle);
+    }
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
+
+    private void selectItem(int position) {
+
+        Fragment fragment = null;
+
         switch (position) {
             case 0:
-                ActionBarActivity prg = new eventsActivity();
-                Bundle args = new Bundle();
+                new eventsActivity();
+                new Bundle();
                 this.startActivity(new Intent(this, eventsActivity.class));
                 finish();
                 break;
             case 1:
-                ActionBarActivity bsc = new searchActivity();
+                new searchActivity();
                 new Bundle();
-                finish();
                 this.startActivity(new Intent(this, searchActivity.class));
+                finish();
                 break;
             case 2:
+                new searchInTime();
+                new Bundle();
+                this.startActivity(new Intent(this, searchInTime.class));
+                finish();
                 break;
             case 3:
-                MapsActivity map = new MapsActivity();
+                new MapsActivity();
                 new Bundle();
-                finish();
                 this.startActivity(new Intent(this, MapsActivity.class));
+                finish();
+                break;
+            default:
                 break;
         }
+
+        if (fragment != null) {
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+            mDrawerList.setItemChecked(position, true);
+            mDrawerList.setSelection(position);
+            getActionBar().setTitle(mNavigationDrawerItemTitles[position]);
+            mDrawerLayout.closeDrawer(mDrawerList);
+
+        } else {
+            Log.e("MainActivity", "Error in creating fragment");
+        }
+
     }
 
 }
