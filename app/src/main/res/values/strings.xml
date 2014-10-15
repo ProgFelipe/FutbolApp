@@ -9,6 +9,15 @@
     <string name="title_activity_maps">Canchas cercanas</string>
     <string name="title_activity_reserva">Reservar</string>
 
+    <!--Navigation-->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="nav0">Mis Eventos</string>
+    <string name="nav1">Buscar por nombre</string>
+    <string name="nav2">Buscar por fecha</string>
+    <string name="nav3">Ver Canchas en Mapa</string>
+    <!--End-->
+
     <string name="btn_buscar">Buscar Canchas</string>
     <string name="btn_mapa">Canchas en mapa</string>
     <string name="btn_programa">Eventos</string>

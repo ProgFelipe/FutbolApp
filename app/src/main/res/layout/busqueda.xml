@@ -29,7 +29,8 @@
         android:layout_height="wrap_content"
         android:background="#575746"
         android:id="@+id/listViewSearch"
-        android:fastScrollEnabled="true"/>
+        android:fastScrollEnabled="true"
+        android:smoothScrollbar="false" />
     <ProgressBar
         android:id="@+id/progressBarSearch"
         style="?android:attr/progressBarStyleLarge"
