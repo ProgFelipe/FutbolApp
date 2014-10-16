@@ -7,8 +7,18 @@
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <ImageView
+        <com.daimajia.slider.library.SliderLayout
+            android:id="@+id/slider"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            />
+        <com.daimajia.slider.library.Indicators.PagerIndicator
+            android:id="@+id/custom_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            />
+        <!--<ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageView"
@@ -18,7 +28,8 @@
             android:layout_alignParentTop="true"
             android:background="#ff41ff1d"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true" />-->
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,7 +38,7 @@
             android:text="@string/largeText"
             android:scrollbars = "vertical"
             android:id="@+id/textViewMain"
-            android:layout_below="@+id/imageView"
+            android:layout_below="@+id/slider"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:background="#ffb7ff73" />

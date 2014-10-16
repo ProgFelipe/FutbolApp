@@ -16,6 +16,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.daimajia.slider.library.Animations.DescriptionAnimation;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
+
+import java.util.HashMap;
 
 import example.futbolapp.View.DrawerItemCustomAdapter;
 import example.futbolapp.View.ObjectDrawerItem;
@@ -23,20 +31,23 @@ import example.futbolapp.View.ObjectDrawerItem;
 /**
  * Created by Felipegi on 11/09/2014.
  */
-public class mainActivity  extends ActionBarActivity {
+public class mainActivity  extends ActionBarActivity  implements BaseSliderView.OnSliderClickListener{
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-
+    private int sliderEffect;
+    //Slider
+    private SliderLayout newsSlider;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actividad_principal);
         TextView newstext = (TextView)findViewById(R.id.textViewMain);
         newstext.setMovementMethod(new ScrollingMovementMethod());
+        sliderEffect = 0;
         //Nav Drawer
         mTitle = mDrawerTitle = getTitle();
 
@@ -82,6 +93,40 @@ public class mainActivity  extends ActionBarActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
+        //Slider
+        newsSlider = (SliderLayout)findViewById(R.id.slider);
+
+        HashMap<String,String> url_maps = new HashMap<String, String>();
+        url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
+        url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
+        url_maps.put("House of Cards", "http://cdn3.nflximg.net/images/3093/2043093.jpg");
+        url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");
+
+        HashMap<String,Integer> file_maps = new HashMap<String, Integer>();
+        file_maps.put("Hannibal",R.drawable.hannibal);
+        file_maps.put("Big Bang Theory",R.drawable.bigbang);
+        file_maps.put("House of Cards",R.drawable.house);
+        file_maps.put("Game of Thrones", R.drawable.game_of_thrones);
+
+        for(String name : file_maps.keySet()){
+            TextSliderView textSliderView = new TextSliderView(this);
+            // initialize a SliderLayout
+            textSliderView
+                    .description(name)
+                    .image(file_maps.get(name))
+                    .setScaleType(BaseSliderView.ScaleType.Fit)
+                    .setOnSliderClickListener(this);
+
+            //add your extra information
+            textSliderView.getBundle()
+                    .putString("extra",name);
+
+            newsSlider.addSlider(textSliderView);
+        }
+        newsSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+        newsSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        newsSlider.setCustomAnimation(new DescriptionAnimation());
+        newsSlider.setDuration(4000);
 
     }
     @Override
@@ -122,6 +167,60 @@ public class mainActivity  extends ActionBarActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onSliderClick(BaseSliderView slider) {
+        switch(sliderEffect){
+            case 0:
+                newsSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+                sliderEffect++;
+                break;
+            case 1:
+                newsSlider.setPresetTransformer(SliderLayout.Transformer.Background2Foreground);
+                sliderEffect++;
+                break;
+            case 2:
+                newsSlider.setPresetTransformer(SliderLayout.Transformer.CubeIn);
+                sliderEffect++;
+                break;
+            case 3:
+                newsSlider.setPresetTransformer(SliderLayout.Transformer.DepthPage);
+                sliderEffect++;
+                break;
+            case 4:
+                newsSlider.setPresetTransformer(SliderLayout.Transformer.Fade);
+                sliderEffect++;
+                break;
+            case 5:
+                newsSlider.setPresetTransformer(SliderLayout.Transformer.FlipHorizontal);
+                sliderEffect++;
+                break;
+            case 6:
+                newsSlider.setPresetTransformer(SliderLayout.Transformer.FlipPage);
+                sliderEffect++;
+                break;
+            case 7:
+                newsSlider.setPresetTransformer(SliderLayout.Transformer.Foreground2Background);
+                sliderEffect++;
+                break;
+            case 8:
+                newsSlider.setPresetTransformer(SliderLayout.Transformer.RotateUp);
+                sliderEffect = 0;
+                break;
+            default:
+                newsSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+
+
+        }
+         /*//Other Effects
+        newsSlider.setPresetTransformer(SliderLayout.Transformer.RotateDown);
+        newsSlider.setPresetTransformer(SliderLayout.Transformer.Stack);
+        newsSlider.setPresetTransformer(SliderLayout.Transformer.Tablet);
+        newsSlider.setPresetTransformer(SliderLayout.Transformer.ZoomIn);
+        newsSlider.setPresetTransformer(SliderLayout.Transformer.ZoomOutSlide);
+        newsSlider.setPresetTransformer(SliderLayout.Transformer.ZoomOut);*/
+        Toast.makeText(this,slider.getBundle().get("extra") + "", Toast.LENGTH_SHORT).show();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
