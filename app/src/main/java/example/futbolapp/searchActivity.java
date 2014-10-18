@@ -28,7 +28,6 @@ import org.json.JSONObject;
 //SQLite
 import example.futbolapp.View.DrawerItemCustomAdapter;
 import example.futbolapp.View.ObjectDrawerItem;
-import example.futbolapp.database.MergeData;
 import example.futbolapp.database.local.DB_Manager;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
@@ -230,27 +229,6 @@ public class searchActivity extends ActionBarActivity {
         }
     }
 
-
-    public void getAllFields(){
-        Toast.makeText(aq.getContext(),"Obteniendo canchas ...",Toast.LENGTH_SHORT).show();
-
-        synchronized(this) {
-            //SQlite
-            manager = new DB_Manager(this);
-            //Busca cambios en la base de datos local con respecto a la externa
-            //Si los hay actualiza la base de datos local
-            MergeData merge = new MergeData(this, this.aq, manager);
-            merge.getCanchas();
-            //Text view two_line_list por defecto de android
-        }
-        synchronized(this) {
-            cursor = manager.cargarCursorCanchas();
-            String[] from = new String[]{manager.CN_Nombre, manager.CN_Telefono};
-            int[] to = new int[]{android.R.id.text1, android.R.id.text2};
-            adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, cursor, from, to, 0);
-            listView.setAdapter(adapter);
-        }
-    }
     private class BuscarTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -279,7 +257,7 @@ public class searchActivity extends ActionBarActivity {
     public void onBackPressed() {
         if(searchDone){
             searchDone = false;
-            getAllFields();
+            getFields();
         }else{
             finish();
         }
