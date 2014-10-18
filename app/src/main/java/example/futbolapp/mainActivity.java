@@ -137,7 +137,7 @@ public class mainActivity  extends ActionBarActivity  implements BaseSliderView.
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.ic_launcher)
                 .setTitle("Saliendo CanchaFinder")
                 .setMessage("¿Esta seguro que desea salir?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener()
