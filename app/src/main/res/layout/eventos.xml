@@ -12,6 +12,13 @@ android:layout_height="match_parent" >
     android:layout_height="match_parent"
     android:id="@+id/calendarView"
     android:layout_gravity="center_horizontal" />
+    <ProgressBar
+        android:id="@+id/progressBarEvents"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        />
 </FrameLayout>
 <ListView
     android:id="@+id/left_drawer"
