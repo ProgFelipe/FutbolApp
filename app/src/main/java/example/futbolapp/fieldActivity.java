@@ -29,12 +29,13 @@ public class fieldActivity extends ActionBarActivity {
     private TextView infoCancha;
     private Button btnDisp;
     private ImageView imgCancha;
+    private String value;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cancha);
         Bundle extras = getIntent().getExtras();
-        String value = "CanchaN";
+        value = "";
         if (extras != null) {
             value = extras.getString("fieldID");
         }
@@ -90,6 +91,7 @@ public class fieldActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), reservationActivity.class);
+                intent.putExtra("idField", value);
                 startActivity(intent);
             }
         });
