@@ -2,6 +2,7 @@ package example.futbolapp;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -49,6 +50,8 @@ public class searchActivity extends ActionBarActivity {
     ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+    //
+    private ProgressDialog pDialog;
     //
     private Cursor cursor;
     private DB_Manager manager;
@@ -251,7 +254,11 @@ public class searchActivity extends ActionBarActivity {
 
         @Override
         protected  void onPreExecute(){
-            Toast.makeText(getApplicationContext(),"Buscando cancha ...", Toast.LENGTH_SHORT).show();
+            pDialog = new ProgressDialog(searchActivity.this);
+            pDialog.setMessage("Por favor espere...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+            //Toast.makeText(getApplicationContext(),"Buscando cancha ...", Toast.LENGTH_SHORT).show();
         }
         @Override
         protected Void doInBackground(Void... voids) {
@@ -261,7 +268,9 @@ public class searchActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             adapter.changeCursor(cursor);
-            Toast.makeText(getApplicationContext(),"Busqueda Finalizada ...", Toast.LENGTH_SHORT).show();
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            //Toast.makeText(getApplicationContext(),"Busqueda Finalizada ...", Toast.LENGTH_SHORT).show();
             //Show getted information of fields
         }
     }
