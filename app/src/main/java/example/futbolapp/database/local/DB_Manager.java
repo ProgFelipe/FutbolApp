@@ -38,7 +38,7 @@ public class DB_Manager {
             + CN_Icono + " text null ,"
             + CN_Informacion + " text); ";
 
-    public static final String TABLE_NAME1 = "usuario";
+    /*public static final String TABLE_NAME1 = "usuario";
     public static final String CN_IdUsuario = "_id";
     public static final String CN_NombreUsuario = "nombre";
     public static final String CN_Password = "clave";
@@ -46,7 +46,7 @@ public class DB_Manager {
     public static final String CREATE_TABLE_USUARIO = "create table "+TABLE_NAME1+" ("
             + CN_IdUsuario + " integer primary key autoincrement, "
             + CN_NombreUsuario + " text not null, "
-            + CN_Password + " text not null); ";
+            + CN_Password + " text not null); ";*/
 
 
     private DbHelper helper;
@@ -58,7 +58,7 @@ public class DB_Manager {
     }
 
 
-    public ContentValues setContentValuesCancha(Integer id, String nomb, String direccion, String tel,
+    private ContentValues setContentValuesCancha(Integer id, String nomb, String direccion, String tel,
                                           String latitud, String longitud, String Icono, String info){
         ContentValues valores = new ContentValues();
         valores.put(CN_IdCancha, id);
@@ -78,7 +78,8 @@ public class DB_Manager {
         db.insert(TABLE_CANCHAS, null, setContentValuesCancha(id,nomb,direccion,tel,latitud,longitud,icono, info));
     }
 
-    private ContentValues setContentValuesUsuario(String nomb, String clave){
+  /*//FUTURE USE
+   private ContentValues setContentValuesUsuario(String nomb, String clave){
         ContentValues valores = new ContentValues();
         valores.put(CN_NombreUsuario, nomb);
         valores.put(CN_Password, clave);
@@ -88,15 +89,18 @@ public class DB_Manager {
 
     public void registrarUsuario(String nomb, String clave){
         db.insert(TABLE_NAME1, null, setContentValuesUsuario(nomb, clave));
-    }
+    }*/
 
     public void eliminarCancha(String ID){
         db.delete(TABLE_CANCHAS, CN_IdCancha+"=?",new String[]{ID});
     }
 
+    public void eliminarCanchas(){
+        db.execSQL("delete from "+ TABLE_CANCHAS);
+    }
     public void modificarInfoCancha(Integer id, String nomb, String direccion, String tel,
                                     String latitud, String longitud, String Icono, String info){
-        db.update(TABLE_CANCHAS, setContentValuesCancha(id,nomb, direccion , tel , latitud, longitud, Icono, info),CN_Informacion+"=?", new String[]{info});
+        db.update(TABLE_CANCHAS, setContentValuesCancha(id,nomb, direccion , tel , latitud, longitud, Icono, info),CN_IdCancha+"=?",new String []{Integer.toString(id)});
     }
     public Cursor cargarCursorCanchas(){
         String[] columnas = new String[]{CN_IdCancha,CN_Nombre,CN_Direccion,CN_Telefono,CN_Latitud,CN_Longitud,CN_Icono,CN_Informacion};
@@ -132,6 +136,4 @@ public class DB_Manager {
         }
         return result;
     }
-
-
 }
