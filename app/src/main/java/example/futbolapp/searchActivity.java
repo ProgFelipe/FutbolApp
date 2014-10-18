@@ -63,15 +63,12 @@ public class searchActivity extends ActionBarActivity {
     //AQuery object
     AQuery aq;
 
-    ArrayList<String> fields;
-
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.busqueda);
         searchDone = false;
         //Instantiate AQuery Object
         aq = new AQuery(this);
-        fields = new ArrayList<String>();
         listView = (ListView)findViewById(R.id.listViewSearch);
         //autoComplete = (AutoCompleteTextView)findViewById(R.id.autocomplete);
 
@@ -181,11 +178,10 @@ public class searchActivity extends ActionBarActivity {
                 JSONArray jsonArray = json.getJSONArray("field");
                 if (jsonArray != null) {
                     int len = jsonArray.length();
+                    manager.eliminarCanchas();
                     for (int i = 0; i < len; i++) {
                         //Get the name of the field from array index
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        fields.add(jsonObject.getString("name"));
-
                         //SQLite
                         if(manager.buscarIdCancha(jsonObject.getString("id")) == false)
                         {
@@ -193,6 +189,11 @@ public class searchActivity extends ActionBarActivity {
                                     jsonObject.getString("phone"), jsonObject.getString("latitude"), jsonObject.getString("length"),
                                     jsonObject.getString("icon"), jsonObject.getString("description"));
                         }
+                        /*else{
+                            manager.modificarInfoCancha(Integer.parseInt(jsonObject.getString("id")), jsonObject.getString("name"), jsonObject.getString("address"),
+                                    jsonObject.getString("phone"), jsonObject.getString("latitude"), jsonObject.getString("length"),
+                                    jsonObject.getString("icon"), jsonObject.getString("description"));
+                        }*/
                     }
                 }
             } catch (JSONException e) {
@@ -219,7 +220,7 @@ public class searchActivity extends ActionBarActivity {
             }
             //When response code is other 500 or 404
             else{
-                Toast.makeText(aq.getContext(),"Unexpected Error occured",Toast.LENGTH_SHORT).show();
+                Toast.makeText(aq.getContext(),"Verifique su conexión",Toast.LENGTH_SHORT).show();
             }
             cursor = manager.cargarCursorCanchas();
             String[] from = new String[]{manager.CN_Nombre,manager.CN_Telefono};
