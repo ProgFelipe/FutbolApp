@@ -7,57 +7,63 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:id="@+id/content_frame"
+    android:background="@drawable/background_shape"
     android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Reservar"
-        android:id="@+id/btnReservar"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Seleccione una hora y luego click en reservar"
-        android:id="@+id/txtReservar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
+    <FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/btnFechaReserva"
+    android:id="@+id/frameLayout"
+    android:layout_marginTop="5dp">
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/list_horas"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/btnReservar"
-        android:layout_below="@+id/btnDia" />
+       />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="+"
+        android:id="@+id/btnReservar"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/btn_shape"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="right|bottom" />
+
+</FrameLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Selecciona la fecha"
-        android:id="@+id/btnDia"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/btn_default"
+        android:id="@+id/btnFechaReserva"
         android:onClick="showDatePickerDialog"
-        android:layout_below="@+id/txtReservar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="     - ¿HOY?"
+        android:text="¿HOY?"
+        android:textAlignment="center"
+        android:paddingLeft="60dp"
         android:id="@+id/chkToday"
-        android:layout_above="@+id/list_horas"
-        android:layout_toRightOf="@+id/btnDia"
-        android:layout_toEndOf="@+id/btnDia"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/btn_default"
+        android:layout_toRightOf="@+id/btnFechaReserva"
+        android:layout_toEndOf="@+id/btnFechaReserva"
         android:checked="false"
-        android:layout_below="@+id/txtReservar"
+        android:layout_above="@+id/frameLayout"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
