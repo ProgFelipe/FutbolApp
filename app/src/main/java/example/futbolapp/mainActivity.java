@@ -281,6 +281,7 @@ public class mainActivity  extends ActionBarActivity  implements BaseSliderView.
                                 editor.commit();
                                 moveTaskToBack(true);
                                 finish();
+                                startActivity(new Intent(getApplicationContext(), LoginApp.class));
                             }
 
                         })
