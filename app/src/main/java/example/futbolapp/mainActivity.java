@@ -3,8 +3,10 @@ package example.futbolapp;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -55,12 +57,13 @@ public class mainActivity  extends ActionBarActivity  implements BaseSliderView.
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[4];
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[5];
 
         drawerItem[0] = new ObjectDrawerItem(android.R.drawable.ic_menu_today, getResources().getString(R.string.nav0));
         drawerItem[1] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav1));
         drawerItem[2] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav2));
         drawerItem[3] = new ObjectDrawerItem(android.R.drawable.ic_dialog_map, getResources().getString(R.string.nav3));
+        drawerItem[4] = new ObjectDrawerItem(android.R.drawable.ic_lock_power_off, getResources().getString(R.string.nav4));
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.listview_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
@@ -128,7 +131,7 @@ public class mainActivity  extends ActionBarActivity  implements BaseSliderView.
 
             newsSlider.addSlider(textSliderView);
         }
-        newsSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+        newsSlider.setPresetTransformer(SliderLayout.Transformer.DepthPage);
         newsSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
         newsSlider.setCustomAnimation(new DescriptionAnimation());
         newsSlider.setDuration(4000);
@@ -262,6 +265,28 @@ public class mainActivity  extends ActionBarActivity  implements BaseSliderView.
                 new Bundle();
                 this.startActivity(new Intent(this, MapsActivity.class));
                 break;
+            case 4:
+                new AlertDialog.Builder(this)
+                        .setIcon(R.drawable.ic_launcher)
+                        .setTitle("Saliendo CanchaFinder")
+                        .setMessage("¿Esta seguro que desea cerrar sessión?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences sharedpreferences = getSharedPreferences
+                                        (LoginApp.MyPREFERENCES, Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedpreferences.edit();
+                                editor.clear();
+                                editor.commit();
+                                moveTaskToBack(true);
+                                finish();
+                            }
+
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+                break;
             default:
                 break;
         }
@@ -276,7 +301,7 @@ public class mainActivity  extends ActionBarActivity  implements BaseSliderView.
             mDrawerLayout.closeDrawer(mDrawerList);
 
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
+            //Log.e("MainActivity", "Error in creating fragment");
         }
 
     }
