@@ -13,8 +13,10 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -35,6 +37,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxStatus;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -63,13 +68,16 @@ public class reservationActivity extends ActionBarActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private CheckBox chkToday;
+    private static String idUser;
+    private static String userName;
+    AQuery aq;
     //
     private ProgressDialog pDialog;
     // URL to get fields by date JSON
     private static String url = "http://solweb.co/reservas/api/reservations/availability";
     JSONArray fields = null;
     //
-    private Button btnReservar ;
+    private Button btnReservar, btnFecha ;
     private ListView listaHoras;
     private static boolean selectedHour, selectedDate;
     private static String hour,idField;
@@ -89,7 +97,6 @@ public class reservationActivity extends ActionBarActivity {
         day= 0;
         year = 0;
         hour = "";
-
         selectedHour = false;
         selectedDate = false;
 
@@ -97,9 +104,21 @@ public class reservationActivity extends ActionBarActivity {
             idField = extras.getString("idField");
         }
 
+        btnFecha = (Button)findViewById(R.id.btnFechaReserva);
         btnReservar = (Button)findViewById(R.id.btnReservar);
         listaHoras = (ListView)findViewById(R.id.list_horas);
         chkToday = (CheckBox)findViewById(R.id.chkToday);
+
+        // Font path
+        String fontPath = "fonts/RobotoTTF/Roboto-Medium.ttf";
+        String fontPath2 = "fonts/RobotoTTF/Roboto-Bold.ttf";
+        // Loading Font Face
+        Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
+        Typeface tf2 = Typeface.createFromAsset(getAssets(), fontPath2);
+        // Applying font
+        btnFecha.setTypeface(tf);
+        chkToday.setTypeface(tf);
+        btnReservar.setTypeface(tf2);
 
         nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
@@ -129,8 +148,9 @@ public class reservationActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 if(selectedHour == true && selectedDate == true){
-                    createNotification();
-                    new SetReservation().execute();
+                    //createNotification();
+                    reservaPorUrl();
+                    //new SetReservation().execute();
                 }else{
                     if(selectedHour == false && selectedDate == false){
                         Toast.makeText(getApplicationContext(), "Ingrese Hora y Fecha", Toast.LENGTH_LONG).show();
@@ -295,6 +315,13 @@ public class reservationActivity extends ActionBarActivity {
 
     }
     public void createNotification(){
+        DB_Manager manager = new DB_Manager(this);
+        Cursor cursor = manager.buscarCanchaById(idField);
+        String nombreCancha = "";
+        if (cursor.moveToFirst()){ // data?
+            nombreCancha = cursor.getString(cursor.getColumnIndex("name"));
+        }
+        cursor.close();
         Notification notificacion = new Notification(
                 R.drawable.ic_launcher,
                 "Reserva con éxito",
@@ -302,7 +329,7 @@ public class reservationActivity extends ActionBarActivity {
         PendingIntent intencionPendiente = PendingIntent.getActivity(
                 this, 0, new Intent(this, reservationActivity.class), 0);
         notificacion.setLatestEventInfo(this, "Reserva con éxito",
-                "En cancha fecha y hora", intencionPendiente);
+                "En "+nombreCancha+" a las "+hour+":00 , del "+day+"/"+month+"/"+year, intencionPendiente);
         nm.notify(ID_NOTIFICACION_CREAR, notificacion);
     }
 
@@ -365,6 +392,47 @@ public class reservationActivity extends ActionBarActivity {
                 pDialog.dismiss();
             createNotification();
             Toast.makeText(getApplicationContext(), "Reserva con exito ", Toast.LENGTH_LONG).show();
+        }
+    }
+    public void reservaPorUrl(){
+        SharedPreferences sharedpreferences = getSharedPreferences
+                (LoginApp.MyPREFERENCES, Context.MODE_PRIVATE);
+        idUser =  LoginApp.idUsuario;
+        idUser = sharedpreferences.getString(idUser, "");
+        userName = LoginApp.name;
+        userName = sharedpreferences.getString(userName, "");
+        String url = "http://solweb.co/reservas/api/reservations/add/"+userName+"-"+hour+"-"+day+"-"+month+"-"+year+"-"+"descripcion"+"-"+idField+"-"+idUser;
+        //Instantiate AQuery Object
+        aq = new AQuery(this);
+        aq.progress(R.id.progressBarEvents).ajax(url, String.class, this,"jsonCallback");
+    }
+    public void jsonCallback(String url, String result, AjaxStatus status) {
+        //When JSON is not null
+        if (result != null) {
+            //Log.v("JSON", json.toString());
+            String jsonResponse = "";
+
+            Log.e(" Respuesta ", result);
+            if(result.equals("Exitoso")){
+                createNotification();
+            }
+
+        }
+
+        //When JSON is null
+        else {
+            //When response code is 500 (Internal Server Error)
+            if(status.getCode() == 500){
+                Toast.makeText(aq.getContext(),"Server is busy or down. Try again!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is 404 (Not found)
+            else if(status.getCode() == 404){
+                Toast.makeText(aq.getContext(),"Resource not found!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is other 500 or 404
+            else{
+                Toast.makeText(aq.getContext(),"Verifique su conexión",Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
