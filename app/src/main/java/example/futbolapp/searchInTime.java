@@ -371,7 +371,7 @@ public class searchInTime extends ActionBarActivity {
                 idFields = new ArrayList();
                 //Get json as Array
                 JSONArray jsonArray = json.getJSONArray("reservation");
-                Toast.makeText(aq.getContext(), jsonArray.toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(aq.getContext(), jsonArray.toString(), Toast.LENGTH_LONG).show();
                 if (jsonArray != null) {
                     int len = jsonArray.length();
                     for (int i = 0; i < len; i++) {
