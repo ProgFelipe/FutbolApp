@@ -2,8 +2,11 @@ package example.futbolapp;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -41,12 +44,14 @@ public class eventsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eventos);
+
         Bundle extras = getIntent().getExtras();
         //getTheIdUser
-        String idUser = "5";
-        if (extras != null) {
-            idUser = extras.getString("idUser");
-        }
+        SharedPreferences sharedpreferences = getSharedPreferences
+                (LoginApp.MyPREFERENCES, Context.MODE_PRIVATE);
+        String idUser =  LoginApp.idUsuario;
+        idUser = sharedpreferences.getString(idUser, "");
+        Log.d("IDUsuario", idUser);
         //Instantiate AQuery Object
         aq = new AQuery(this);
         mTitle = mDrawerTitle = getTitle();

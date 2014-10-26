@@ -39,6 +39,7 @@ public class LoginApp extends FragmentActivity {
     public static final String name = "nameKey";
     public static final String pass = "passwordKey";
     public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String idUsuario = "idUsuario";
     //AQuery object
     AQuery aq;
     SharedPreferences sharedpreferences;
@@ -108,16 +109,17 @@ public class LoginApp extends FragmentActivity {
                     for (int i = 0; i < len; i++) {
                         //Get the name of the field from array index
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Log.e("Usuario contraseña: ==> ",jsonObject.getString("user")+", "+jsonObject.getString("pass") );
-                        Log.d("Usuario contraseña: Local ==> ",user+", "+passw);
+                        //Log.e("Usuario contraseña: ==> ",jsonObject.getString("user")+", "+jsonObject.getString("pass") );
+                        //Log.d("Usuario contraseña: Local ==> ",user+", "+passw);
                         if(user.equals(jsonObject.getString("user").trim())){
-                            Log.d("Usuario hallado ","True");
+                            //Log.d("Usuario hallado ","True");
                             if(passw.equals(jsonObject.getString("pass").trim())){
                                 SharedPreferences.Editor editor = sharedpreferences.edit();
                                 editor.putString(name, user);
                                 editor.putString(pass, passw);
+                                editor.putString(idUsuario, jsonObject.getString("id"));
                                 editor.commit();
-                                Log.d("Password hallado ","True");
+                                //Log.d("Password hallado ","True");
                                 loginOK = true;
                             }
                         }
