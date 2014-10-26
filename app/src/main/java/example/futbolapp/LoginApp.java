@@ -2,7 +2,9 @@ package example.futbolapp;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -34,8 +36,12 @@ public class LoginApp extends FragmentActivity {
     private ProgressDialog pDialog;
     private Facebook fb;
     private MainFragment mainFragment;
+    public static final String name = "nameKey";
+    public static final String pass = "passwordKey";
+    public static final String MyPREFERENCES = "MyPrefs" ;
     //AQuery object
     AQuery aq;
+    SharedPreferences sharedpreferences;
     private static Boolean loginOK;
     DB_Manager manager;
 
@@ -66,6 +72,22 @@ public class LoginApp extends FragmentActivity {
         }*/
     }
 
+    @Override
+    protected void onResume() {
+        sharedpreferences=getSharedPreferences(MyPREFERENCES,
+                Context.MODE_PRIVATE);
+        if (sharedpreferences.contains(name))
+        {
+            if(sharedpreferences.contains(pass)){
+                Intent i = new Intent(this, example.futbolapp.
+                        mainActivity.class);
+                startActivity(i);
+            }
+        }
+        super.onResume();
+    }
+
+
     public void checkUser(){
         //JSON URL
         String url = "http://solweb.co/reservas/api/login/logins";
@@ -91,6 +113,10 @@ public class LoginApp extends FragmentActivity {
                         if(user.equals(jsonObject.getString("user").trim())){
                             Log.d("Usuario hallado ","True");
                             if(passw.equals(jsonObject.getString("pass").trim())){
+                                SharedPreferences.Editor editor = sharedpreferences.edit();
+                                editor.putString(name, user);
+                                editor.putString(pass, passw);
+                                editor.commit();
                                 Log.d("Password hallado ","True");
                                 loginOK = true;
                             }
