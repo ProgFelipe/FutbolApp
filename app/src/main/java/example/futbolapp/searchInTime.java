@@ -75,11 +75,11 @@ public class searchInTime extends ActionBarActivity {
     // URL to get fields by date JSON
     private static String url;
     //
-    private static int hour;
-    private static int minute;
-    private static int day;
-    private static int month;
-    private static int year;
+    private static String hour;
+    private static String minute;
+    private static String day;
+    private static String month;
+    private static String year;
     private static TextView txtFecha;
     private static TextView txtHora;
 
@@ -94,10 +94,10 @@ public class searchInTime extends ActionBarActivity {
         setContentView(R.layout.busqueda_horario);
         //Get System Date
         Calendar c = Calendar.getInstance();
-        minute = c.get(Calendar.MINUTE);
-        day = c.get(Calendar.DAY_OF_WEEK);
-        month = c.get(Calendar.MONTH);
-        year = c.get(Calendar.YEAR);
+        minute = "";
+        day = "";
+        month = "";
+        year = "";
 
         //Instantiate AQuery Object
         aq = new AQuery(this);
@@ -124,23 +124,12 @@ public class searchInTime extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 //1200-10-09-2014
-                if(month < 10 && day < 10) {
-                        url = "http://solweb.co/reservas/api/reservations/fieldsavailability/" + hour + "-0" + day + "-0" + month + "-" + year;
-                }else{
-                    url = "http://solweb.co/reservas/api/reservations/fieldsavailability/" + hour + "-" + day + "-" + month + "-" + year;
-                    if(month < 10){
-                        url = "http://solweb.co/reservas/api/reservations/fieldsavailability/" + hour + "-" + day + "-0" + month + "-" + year;
-                    }
-                    if(day < 10){
-                        url = "http://solweb.co/reservas/api/reservations/fieldsavailability/" + hour + "-0" + day + "-" + month + "-" + year;
-                    }
-                }
+                url = "http://solweb.co/reservas/api/reservations/fieldsavailability/" + hour + "-" + day + "-" + month + "-" + year;
                 //Log.d("URL URL URL URL URL URL URL URL ", url);
                 // Calling async task to get json
                 new GetFields().execute();
                 /*Toast.makeText(getBaseContext() , "Buscando: "+Integer.toString(hour)+":"+Integer.toString(minute)+", "+Integer.toString(day)+"/"+
-                        "/"+Integer.toString(month)+"/"+Integer.toString(year), Toast.LENGTH_LONG).show();*/
-            }
+                        "/"+Integer.toString(month)+"/"+Integer.toString(year), Toast.LENGTH_LONG).show();*/}
         });
         //Drawer
         mTitle = mDrawerTitle = getTitle();
@@ -200,16 +189,24 @@ public class searchInTime extends ActionBarActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker
             final Calendar c = Calendar.getInstance();
-            year = c.get(Calendar.YEAR);
-            month = c.get(Calendar.MONTH);
-            day = c.get(Calendar.DAY_OF_MONTH);
             // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
+            return new DatePickerDialog(getActivity(), this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         }
 
-        public void onDateSet(DatePicker view, int year, int month, int day) {
+        public void onDateSet(DatePicker view, int yr, int m, int d) {
             // Do something with the date chosen by the user
             //Toast.makeText(getActivity().getBaseContext() , "Seleccionó:  día "+Integer.toString(day)+" mes "+Integer.toString(month), Toast.LENGTH_LONG).show();
+            if(m < 10){
+                month = "0"+Integer.toString(m);
+            }else{
+                month = Integer.toString(m);
+            }
+            if(d < 10){
+                day = "0"+Integer.toString(d);
+            }else{
+                day = Integer.toString(d);
+            }
+            year = Integer.toString(yr);
             btnDate.setBackground(getResources().getDrawable(R.drawable.btn_defaulton));
             txtFecha.setText(day + "/" + month + "/"  + year);
         }
@@ -227,16 +224,24 @@ public class searchInTime extends ActionBarActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current time as the default values for the picker
             final Calendar c = Calendar.getInstance();
-            hour = c.get(Calendar.HOUR_OF_DAY);
-            minute = c.get(Calendar.MINUTE);
             // Create a new instance of TimePickerDialog and return it
-            return new TimePickerDialog(getActivity(), this, hour, minute,
+            return new TimePickerDialog(getActivity(), this, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE),
                     DateFormat.is24HourFormat(getActivity()));
         }
 
-        public void onTimeSet(TimePicker view, int hour, int minute) {
+        public void onTimeSet(TimePicker view, int hr, int mn) {
             // Do something with the time chosen by the user
             //Toast.makeText(getActivity().getBaseContext() , "Seleccionó:  Hora "+Integer.toString(hour)+" minute "+Integer.toString(minute), Toast.LENGTH_LONG).show();
+            if(hr < 10){
+                hour = "0"+Integer.toString(hr);
+            }else{
+                hour = Integer.toString(hr);
+            }
+            if(mn < 10){
+                minute = "0"+Integer.toString(mn);
+            }else{
+                minute = Integer.toString(mn);
+            }
             btnHour.setBackground(getResources().getDrawable(R.drawable.btn_defaulton));
             txtHora.setText(hour+" : "+minute);
         }
@@ -363,12 +368,13 @@ public class searchInTime extends ActionBarActivity {
     }
 
     public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
+        idFields = new ArrayList();
+        Log.e("URL URL URL", url);
         //When JSON is not null
         if (json != null) {
             //Log.v("JSON", json.toString());
             String jsonResponse = "";
             try {
-                idFields = new ArrayList();
                 //Get json as Array
                 JSONArray jsonArray = json.getJSONArray("reservation");
                 //Toast.makeText(aq.getContext(), jsonArray.toString(), Toast.LENGTH_LONG).show();
@@ -377,6 +383,7 @@ public class searchInTime extends ActionBarActivity {
                     for (int i = 0; i < len; i++) {
                         //Get the events
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        Log.e("ID ENCONTRADA", jsonObject.getString("id"));
                         idFields.add(jsonObject.getString("id"));
                     }
                 }
@@ -410,11 +417,6 @@ public class searchInTime extends ActionBarActivity {
     // The method that displays the popup.
     //References: http://androidresearch.wordpress.com/2012/05/06/how-to-create-popups-in-android/
     private void showPopup(final Activity context) {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(searchInTime.this);
         LayoutInflater inflater = getLayoutInflater();
         View convertView = (View) inflater.inflate(R.layout.popup, null);
@@ -424,13 +426,15 @@ public class searchInTime extends ActionBarActivity {
         ListView lv = (ListView) convertView.findViewById(R.id.listViewPopup);
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);
         //lv.setAdapter(adapter);
-        alertDialog.show();
         //Get database fields
         final DB_Manager manager = new DB_Manager(this);
         String[] from = new String[]{manager.CN_Nombre,manager.CN_Telefono};
         int [] to = new int[]{android.R.id.text1,android.R.id.text2};
         ArrayList  <Cursor> cursores  = new ArrayList();
         Cursor cursor;
+        /*
+        Busca la cancha en la base de datos local el id de la cancha y agrega el cursor encontrado en un arreglo
+         */
         for(int c = 0; c < idFields.size(); c++) {
             //Log.d("IDfield content ", idFields.get(c));
             cursor = manager.buscarCanchaById(idFields.get(c));
@@ -439,10 +443,9 @@ public class searchInTime extends ActionBarActivity {
                 String str = cursor.getString(cursor.getColumnIndex("name"));
                 Log.d("Nombre " + c, str);
             }*/
-
-
         }
         Cursor [] bar = cursores.toArray(new Cursor[cursores.size()]);
+        //el arreglo
         if(bar.length > 0) {
             Cursor extendedCursor = new MergeCursor(bar);
             SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item, extendedCursor, from, to, 0);
@@ -468,6 +471,7 @@ public class searchInTime extends ActionBarActivity {
                     }
             );
         }
+        alertDialog.show();
         //End get database fields
 
         /*int popupWidth = 510;
