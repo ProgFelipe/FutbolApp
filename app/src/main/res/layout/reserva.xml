@@ -38,7 +38,14 @@
         android:layout_alignParentEnd="true"
         android:layout_gravity="right|bottom" />
 
-</FrameLayout>
+        <ProgressBar
+            android:id="@+id/progressBarReserva"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+    </FrameLayout>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
