@@ -100,7 +100,6 @@ public class LoginApp extends FragmentActivity {
         //When JSON is not null
         if (json != null) {
             //Log.v("JSON", json.toString());
-            String jsonResponse = "";
             try {
                 //Get json as Array
                 JSONArray jsonArray = json.getJSONArray("login");

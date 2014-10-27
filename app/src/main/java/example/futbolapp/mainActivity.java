@@ -147,6 +147,7 @@ public class mainActivity  extends ActionBarActivity  implements BaseSliderView.
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        moveTaskToBack(true);
                         finish();
                     }
 
@@ -279,9 +280,8 @@ public class mainActivity  extends ActionBarActivity  implements BaseSliderView.
                                 SharedPreferences.Editor editor = sharedpreferences.edit();
                                 editor.clear();
                                 editor.commit();
-                                moveTaskToBack(true);
-                                finish();
                                 startActivity(new Intent(getApplicationContext(), LoginApp.class));
+                                finish();
                             }
 
                         })
