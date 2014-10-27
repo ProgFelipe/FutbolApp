@@ -70,6 +70,8 @@ public class reservationActivity extends ActionBarActivity {
     private CheckBox chkToday;
     private static String idUser;
     private static String userName;
+    private ArrayList idFields;
+    private static Boolean canReserv;
     AQuery aq;
     //
     private ProgressDialog pDialog;
@@ -97,9 +99,11 @@ public class reservationActivity extends ActionBarActivity {
         day= 0;
         year = 0;
         hour = "";
+        canReserv = false;
         selectedHour = false;
         selectedDate = false;
-
+        //Instantiate AQuery Object
+        aq = new AQuery(this);
         if (extras != null) {
             idField = extras.getString("idField");
         }
@@ -149,7 +153,19 @@ public class reservationActivity extends ActionBarActivity {
             public void onClick(View view) {
                 if(selectedHour == true && selectedDate == true){
                     //createNotification();
-                    reservaPorUrl();
+                    //1200-10-09-2014
+                    if(month < 10 && day < 10) {
+                        url = "http://solweb.co/reservas/api/reservations/fieldsavailability/" + hour + "-0" + day + "-0" + month + "-" + year;
+                    }else{
+                        url = "http://solweb.co/reservas/api/reservations/fieldsavailability/" + hour + "-" + day + "-" + month + "-" + year;
+                        if(month < 10){
+                            url = "http://solweb.co/reservas/api/reservations/fieldsavailability/" + hour + "-" + day + "-0" + month + "-" + year;
+                        }
+                        if(day < 10){
+                            url = "http://solweb.co/reservas/api/reservations/fieldsavailability/" + hour + "-0" + day + "-" + month + "-" + year;
+                        }
+                    }
+                    getDisponibility();
                     //new SetReservation().execute();
                 }else{
                     if(selectedHour == false && selectedDate == false){
@@ -401,12 +417,21 @@ public class reservationActivity extends ActionBarActivity {
         idUser = sharedpreferences.getString(idUser, "");
         userName = LoginApp.name;
         userName = sharedpreferences.getString(userName, "");
-        String url = "http://solweb.co/reservas/api/reservations/add/"+userName+"-"+hour+"-"+day+"-"+month+"-"+year+"-"+"descripcion"+"-"+idField+"-"+idUser;
-        //Instantiate AQuery Object
-        aq = new AQuery(this);
-        aq.progress(R.id.progressBarEvents).ajax(url, String.class, this,"jsonCallback");
+        String url2 = "";
+        if(month < 10 && day < 10) {
+            url2 = "http://solweb.co/reservas/api/reservations/add/"+userName+"-"+hour+"-0"+day+"-0"+month+"-"+year+"-"+"descripcion"+"-"+idField+"-"+idUser;
+        }else{
+            url2 = "http://solweb.co/reservas/api/reservations/add/"+userName+"-"+hour+"-"+day+"-"+month+"-"+year+"-"+"descripcion"+"-"+idField+"-"+idUser;
+            if(month < 10){
+                url2 = "http://solweb.co/reservas/api/reservations/add/"+userName+"-"+hour+"-"+day+"-0"+month+"-"+year+"-"+"descripcion"+"-"+idField+"-"+idUser;
+            }
+            if(day < 10){
+                url2 = "http://solweb.co/reservas/api/reservations/add/"+userName+"-"+hour+"-0"+day+"-"+month+"-"+year+"-"+"descripcion"+"-"+idField+"-"+idUser;
+            }
+        }
+        aq.progress(R.id.progressBarReserva).ajax(url2, String.class, this,"reservated");
     }
-    public void jsonCallback(String url, String result, AjaxStatus status) {
+    public void reservated(String url, String result, AjaxStatus status) {
         //When JSON is not null
         if (result != null) {
             //Log.v("JSON", json.toString());
@@ -432,6 +457,74 @@ public class reservationActivity extends ActionBarActivity {
             //When response code is other 500 or 404
             else{
                 Toast.makeText(aq.getContext(),"Verifique su conexión",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    public void getDisponibility(){
+        //JSON URL
+        //Make Asynchronous call using AJAX method and show progress gif until get info
+        aq.progress(R.id.progressBarReserva).ajax(url, JSONObject.class, this,"jsonCallback");
+    }
+
+    public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
+        //When JSON is not null
+        idFields = new ArrayList();
+        if (json != null) {
+            //Log.v("JSON", json.toString());
+            String jsonResponse = "";
+            try {
+                //Get json as Array
+                JSONArray jsonArray = json.getJSONArray("reservation");
+                //Toast.makeText(aq.getContext(), jsonArray.toString(), Toast.LENGTH_LONG).show();
+                if (jsonArray != null) {
+                    int len = jsonArray.length();
+                    for (int i = 0; i < len; i++) {
+                        //Get the events
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        idFields.add(jsonObject.getString("id"));
+                    }
+                }
+                //Log.d("NUMERO DE IDS ENCONTRADAS ", Integer.toString(idFields.size()));
+                int fieldpresent = 0;
+                Log.e("IDCANCHA DADA ===>  ", idField);
+                for(int count = 0 ; count <idFields.size(); count++){
+                    Log.e("===> ====>========>========>[", idFields.get(count).toString());
+                    if(idField.equals(idFields.get(count))){
+                        fieldpresent++;
+                    }
+                }
+                if(fieldpresent > 0){
+                    canReserv = true;
+                }
+                idFields.clear();
+                if(canReserv){
+                    canReserv = false;
+                    reservaPorUrl();}else{
+                    Toast.makeText(getApplicationContext(), "Cancha ocupada a las "+hour+":00 del "+day+"/"+month+"/"+year, Toast.LENGTH_LONG).show();
+                }
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                Toast.makeText(aq.getContext(), "Error in parsing JSON", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+            }
+        }
+        //When JSON is null
+        else {
+            //When response code is 500 (Internal Server Error)
+            if(status.getCode() == 500){
+                Toast.makeText(aq.getContext(),"Server is busy or down. Try again!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is 404 (Not found)
+            else if(status.getCode() == 404){
+                Toast.makeText(aq.getContext(),"Resource not found!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is other 500 or 404
+            else{
+                Toast.makeText(aq.getContext(),"Verifique su conexion",Toast.LENGTH_SHORT).show();
             }
         }
     }
