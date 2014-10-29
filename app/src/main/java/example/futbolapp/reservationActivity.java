@@ -36,6 +36,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -74,6 +75,7 @@ public class reservationActivity extends Activity {
     private static String userName;
     private ArrayList idFields;
     private static Boolean canReserv;
+    private ProgressBar progressBar;
     AQuery aq;
     //
     private ProgressDialog pDialog;
@@ -109,7 +111,7 @@ public class reservationActivity extends Activity {
         if (extras != null) {
             idField = extras.getString("idField");
         }
-
+        progressBar = (ProgressBar) findViewById(R.id.progressBarReserva);
         btnFecha = (Button)findViewById(R.id.btnFechaReserva);
         btnReservar = (Button)findViewById(R.id.btnReservar);
         listaHoras = (ListView)findViewById(R.id.list_horas);
@@ -167,6 +169,7 @@ public class reservationActivity extends Activity {
                             url = "http://solweb.co/reservas/api/reservations/fieldsavailability/" + hour + "-0" + day + "-" + month + "-" + year;
                         }
                     }
+                    progressBar.setVisibility(View.VISIBLE);
                     getDisponibility();
                     //new SetReservation().execute();
                 }else{
@@ -558,6 +561,7 @@ public class reservationActivity extends Activity {
                 Toast.makeText(aq.getContext(),"Verifique su conexion",Toast.LENGTH_SHORT).show();
             }
         }
+        progressBar.setVisibility(View.GONE);
     }
 
 }

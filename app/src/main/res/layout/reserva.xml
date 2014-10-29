@@ -17,8 +17,16 @@
     android:layout_below="@+id/btnFechaReserva"
     android:id="@+id/frameLayout"
     android:layout_marginTop="5dp">
+        <ProgressBar
+            android:id="@+id/progressBarReserva"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            />
     <ListView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/list_horas"
         android:layout_alignParentLeft="true"
@@ -38,13 +46,7 @@
         android:layout_alignParentEnd="true"
         android:layout_gravity="right|bottom" />
 
-        <ProgressBar
-            android:id="@+id/progressBarReserva"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            />
+
     </FrameLayout>
     <Button
         android:layout_width="wrap_content"
