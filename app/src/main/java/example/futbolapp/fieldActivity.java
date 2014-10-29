@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -20,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +67,9 @@ public class fieldActivity extends Activity {
         infoCancha = (TextView) findViewById(R.id.infoCancha);
         imgCancha = (ImageView) findViewById(R.id.ImgCancha);
         btnDisp = (Button) findViewById(R.id.btnDisponibilidad);
-
+        RatingBar ratingBar = (RatingBar) findViewById(R.id.PuntajeCancha);
+        LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+        stars.getDrawable(2).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         //Get Database cursor
         manager = new DB_Manager(this);
         Cursor c = manager.buscarCanchaById(value);
