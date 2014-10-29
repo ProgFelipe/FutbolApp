@@ -1,10 +1,12 @@
 package example.futbolapp;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
@@ -25,19 +28,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import example.futbolapp.View.DrawerItemCustomAdapter;
 import example.futbolapp.View.ObjectDrawerItem;
+import example.futbolapp.database.local.DB_Manager;
 
 /**
  * Created by FelipeGI on 11/09/2014.
  */
-public class eventsActivity extends ActionBarActivity {
+public class eventsActivity extends Activity {
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+    private ListView listView;
+    private DB_Manager manager;
     //AQuery object
     AQuery aq;
 
@@ -52,6 +60,8 @@ public class eventsActivity extends ActionBarActivity {
         String idUser =  LoginApp.idUsuario;
         idUser = sharedpreferences.getString(idUser, "");
         Log.d("IDUsuario", idUser);
+        manager = new DB_Manager(this);
+        listView = (ListView)findViewById(R.id.listViewReservado);
         //Instantiate AQuery Object
         aq = new AQuery(this);
         mTitle = mDrawerTitle = getTitle();
@@ -189,13 +199,14 @@ public class eventsActivity extends ActionBarActivity {
 
     public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
         //When JSON is not null
+        ArrayList reservas = new ArrayList();
         if (json != null) {
             //Log.v("JSON", json.toString());
             String jsonResponse = "";
             try {
                 //Get json as Array
                 JSONArray jsonArray = json.getJSONArray("reservation");
-                Toast.makeText(aq.getContext(), jsonArray.toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(aq.getContext(), jsonArray.toString(), Toast.LENGTH_LONG).show();
                 if (jsonArray != null) {
                     int len = jsonArray.length();
                     for (int i = 0; i < len; i++) {
@@ -205,13 +216,17 @@ public class eventsActivity extends ActionBarActivity {
 //{"reservation": [{"id":"46","name":"carlos","hour":"1900","day":"20","month":"05","year":"2014",
 // "description":"","idField":"41","idLogin":"5"}]}
 //Elements to calendar view
-                            /*jsonObject.getString("day");
-                            jsonObject.getString("hour");
-                            jsonObject.getString("month");
-                            jsonObject.getString("year");
-                            jsonObject.getString("description");
-                            jsonObject.getString("idField");
-                            jsonObject.getString("idLogin");*/
+
+                            Cursor c = manager.buscarCanchaById(jsonObject.getString("idField"));
+                        String nombreCancha = "";
+                        if (c.moveToFirst()){ // data?
+                            nombreCancha = c.getString(c.getColumnIndex("name"));
+                        }
+                        reservas.add("Reserva "+nombreCancha+" a las "+jsonObject.getString("hour")+" Día: "+jsonObject.getString("day")+"/"+jsonObject.getString("month")+"/"+
+                        jsonObject.getString("year"));
+                //jsonObject.getString("description");
+                //jsonObject.getString("idField");
+                //jsonObject.getString("idLogin");
                     }
                 }
             } catch (JSONException e) {
@@ -220,6 +235,12 @@ public class eventsActivity extends ActionBarActivity {
             } catch (Exception e) {
                 Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                    this,
+                    android.R.layout.simple_list_item_1,
+                    reservas );
+
+            listView.setAdapter(arrayAdapter);
 
         }
         //When JSON is null
