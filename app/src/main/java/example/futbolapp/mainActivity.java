@@ -1,5 +1,6 @@
 package example.futbolapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -10,9 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,7 +32,7 @@ import example.futbolapp.View.ObjectDrawerItem;
 /**
  * Created by Felipegi on 11/09/2014.
  */
-public class mainActivity  extends ActionBarActivity  implements BaseSliderView.OnSliderClickListener{
+public class mainActivity  extends Activity implements BaseSliderView.OnSliderClickListener{
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -52,24 +51,21 @@ public class mainActivity  extends ActionBarActivity  implements BaseSliderView.
         sliderEffect = 0;
         //Nav Drawer
         mTitle = mDrawerTitle = getTitle();
-
         mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[5];
-
         drawerItem[0] = new ObjectDrawerItem(android.R.drawable.ic_menu_today, getResources().getString(R.string.nav0));
         drawerItem[1] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav1));
         drawerItem[2] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav2));
         drawerItem[3] = new ObjectDrawerItem(android.R.drawable.ic_dialog_map, getResources().getString(R.string.nav3));
         drawerItem[4] = new ObjectDrawerItem(android.R.drawable.ic_lock_power_off, getResources().getString(R.string.nav4));
-
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.listview_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
@@ -98,7 +94,6 @@ public class mainActivity  extends ActionBarActivity  implements BaseSliderView.
 
         //Slider
         newsSlider = (SliderLayout)findViewById(R.id.slider);
-
         /*HashMap<String,String> url_maps = new HashMap<String, String>();
         url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
         url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
@@ -300,10 +295,8 @@ public class mainActivity  extends ActionBarActivity  implements BaseSliderView.
             mDrawerList.setSelection(position);
             getActionBar().setTitle(mNavigationDrawerItemTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
-
         } else {
             //Log.e("MainActivity", "Error in creating fragment");
         }
-
     }
 }
