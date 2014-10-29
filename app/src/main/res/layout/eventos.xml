@@ -7,11 +7,19 @@ android:layout_height="match_parent" >
     android:id="@+id/content_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-<CalendarView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/calendarView"
-    android:layout_gravity="center_horizontal" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/soccerfield"
+        android:scaleType = "centerCrop"
+        ></ImageView>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listViewReservado"
+        android:gravity="center"
+        android:fastScrollEnabled="true"
+        android:smoothScrollbar="false" />
     <ProgressBar
         android:id="@+id/progressBarEvents"
         style="?android:attr/progressBarStyleLarge"

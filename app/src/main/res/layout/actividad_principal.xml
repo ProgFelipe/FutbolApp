@@ -28,7 +28,7 @@
             android:layout_below="@+id/slider"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:background="#ffb7ff73" />
+            android:background="@drawable/soccerfield" />
     </RelativeLayout>
     <ListView
         android:id="@+id/left_drawer"

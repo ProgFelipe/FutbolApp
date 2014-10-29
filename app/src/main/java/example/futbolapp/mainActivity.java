@@ -55,12 +55,13 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[5];
-        drawerItem[0] = new ObjectDrawerItem(android.R.drawable.ic_menu_today, getResources().getString(R.string.nav0));
-        drawerItem[1] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav1));
-        drawerItem[2] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav2));
-        drawerItem[3] = new ObjectDrawerItem(android.R.drawable.ic_dialog_map, getResources().getString(R.string.nav3));
-        drawerItem[4] = new ObjectDrawerItem(android.R.drawable.ic_lock_power_off, getResources().getString(R.string.nav4));
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[6];
+        drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_ballsoccer, getResources().getString(R.string.nav));
+        drawerItem[1] = new ObjectDrawerItem(android.R.drawable.ic_menu_today, getResources().getString(R.string.nav0));
+        drawerItem[2] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav1));
+        drawerItem[3] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav2));
+        drawerItem[4] = new ObjectDrawerItem(android.R.drawable.ic_dialog_map, getResources().getString(R.string.nav3));
+        drawerItem[5] = new ObjectDrawerItem(android.R.drawable.ic_lock_power_off, getResources().getString(R.string.nav4));
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.listview_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -228,7 +229,6 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
-
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             selectItem(position);
@@ -242,26 +242,31 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
 
         switch (position) {
             case 0:
+                new mainActivity();
+                new Bundle();
+                this.startActivity(new Intent(this, mainActivity.class));
+                break;
+            case 1:
                 new eventsActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, eventsActivity.class));
                 break;
-            case 1:
+            case 2:
                 new searchActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, searchActivity.class));
                 break;
-            case 2:
+            case 3:
                 new searchInTime();
                 new Bundle();
                 this.startActivity(new Intent(this, searchInTime.class));
                 break;
-            case 3:
+            case 4:
                 new MapsActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, MapsActivity.class));
                 break;
-            case 4:
+            case 5:
                 new AlertDialog.Builder(this)
                         .setIcon(R.drawable.ic_launcher)
                         .setTitle("Saliendo CanchaFinder")

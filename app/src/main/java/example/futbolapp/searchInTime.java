@@ -10,7 +10,9 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MergeCursor;
 import android.graphics.Point;
@@ -61,7 +63,7 @@ import example.futbolapp.database.local.DB_Manager;
 /**
  * Created by Felipe on 08/10/2014.
  */
-public class searchInTime extends ActionBarActivity {
+public class searchInTime extends Activity {
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -137,12 +139,14 @@ public class searchInTime extends ActionBarActivity {
         mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[4];
 
-        drawerItem[0] = new ObjectDrawerItem(android.R.drawable.ic_menu_today, getResources().getString(R.string.nav0));
-        drawerItem[1] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav1));
-        drawerItem[2] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav2));
-        drawerItem[3] = new ObjectDrawerItem(android.R.drawable.ic_dialog_map, getResources().getString(R.string.nav3));
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[6];
+        drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_ballsoccer, getResources().getString(R.string.nav));
+        drawerItem[1] = new ObjectDrawerItem(android.R.drawable.ic_menu_today, getResources().getString(R.string.nav0));
+        drawerItem[2] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav1));
+        drawerItem[3] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav2));
+        drawerItem[4] = new ObjectDrawerItem(android.R.drawable.ic_dialog_map, getResources().getString(R.string.nav3));
+        drawerItem[5] = new ObjectDrawerItem(android.R.drawable.ic_lock_power_off, getResources().getString(R.string.nav4));
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.listview_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
@@ -284,28 +288,56 @@ public class searchInTime extends ActionBarActivity {
 
         switch (position) {
             case 0:
+                new mainActivity();
+                new Bundle();
+                this.startActivity(new Intent(this, mainActivity.class));
+                finish();
+                break;
+            case 1:
                 new eventsActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, eventsActivity.class));
                 finish();
                 break;
-            case 1:
+            case 2:
                 new searchActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, searchActivity.class));
                 finish();
                 break;
-            case 2:
+            case 3:
                 new searchInTime();
                 new Bundle();
                 this.startActivity(new Intent(this, searchInTime.class));
                 finish();
                 break;
-            case 3:
+            case 4:
                 new MapsActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, MapsActivity.class));
                 finish();
+                break;
+            case 5:
+                new AlertDialog.Builder(this)
+                        .setIcon(R.drawable.ic_launcher)
+                        .setTitle("Saliendo CanchaFinder")
+                        .setMessage("¿Esta seguro que desea cerrar sessión?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences sharedpreferences = getSharedPreferences
+                                        (LoginApp.MyPREFERENCES, Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedpreferences.edit();
+                                editor.clear();
+                                editor.commit();
+                                startActivity(new Intent(getApplicationContext(), LoginApp.class));
+                                finish();
+                            }
+
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
                 break;
             default:
                 break;
@@ -363,7 +395,6 @@ public class searchInTime extends ActionBarActivity {
     public void getDisponibility(){
         //JSON URL
         //Make Asynchronous call using AJAX method and show progress gif until get info
-
         aq.progress(R.id.progressBarEvents).ajax(url, JSONObject.class, this,"jsonCallback");
     }
 
@@ -424,9 +455,6 @@ public class searchInTime extends ActionBarActivity {
         alertDialog.setTitle("Disponibles");
 
         ListView lv = (ListView) convertView.findViewById(R.id.listViewPopup);
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);
-        //lv.setAdapter(adapter);
-        //Get database fields
         final DB_Manager manager = new DB_Manager(this);
         String[] from = new String[]{manager.CN_Nombre,manager.CN_Telefono};
         int [] to = new int[]{android.R.id.text1,android.R.id.text2};
@@ -436,13 +464,8 @@ public class searchInTime extends ActionBarActivity {
         Busca la cancha en la base de datos local el id de la cancha y agrega el cursor encontrado en un arreglo
          */
         for(int c = 0; c < idFields.size(); c++) {
-            //Log.d("IDfield content ", idFields.get(c));
             cursor = manager.buscarCanchaById(idFields.get(c));
             cursores.add(cursor);
-            /*if (cursor.moveToFirst()) {
-                String str = cursor.getString(cursor.getColumnIndex("name"));
-                Log.d("Nombre " + c, str);
-            }*/
         }
         Cursor [] bar = cursores.toArray(new Cursor[cursores.size()]);
         //el arreglo
@@ -472,42 +495,5 @@ public class searchInTime extends ActionBarActivity {
             );
         }
         alertDialog.show();
-        //End get database fields
-
-        /*int popupWidth = 510;
-        int popupHeight = 750;
-
-        // Inflate the popup_layout.xml
-        LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
-        LayoutInflater layoutInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = layoutInflater.inflate(R.layout.popup, viewGroup);
-
-        // Creating the PopupWindow
-        final PopupWindow popup = new PopupWindow(context);
-        popup.setContentView(layout);
-        popup.setWidth(popupWidth);
-        popup.setHeight(popupHeight);
-        popup.setFocusable(true);
-        setItemsList();
-        // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
-        int OFFSET_X = 30;
-        int OFFSET_Y = 30;
-
-        // Clear the default translucent background
-        popup.setBackgroundDrawable(new BitmapDrawable());
-
-        // Displaying the popup at the specified location, + offsets.
-        popup.showAtLocation(layout, Gravity.NO_GRAVITY,OFFSET_X, OFFSET_Y);
-
-        // Getting a reference to Close button, and close the popup when clicked.
-        Button close = (Button) layout.findViewById(R.id.dismiss);
-        close.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                popup.dismiss();
-            }
-        });*/
     }
 }

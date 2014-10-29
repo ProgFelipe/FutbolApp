@@ -1,6 +1,7 @@
 package example.futbolapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -12,6 +13,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -60,7 +62,7 @@ import example.futbolapp.database.local.DB_Manager;
 /**
  * Created by Felipe on 09/10/2014.
  */
-public class reservationActivity extends ActionBarActivity {
+public class reservationActivity extends Activity {
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -114,15 +116,15 @@ public class reservationActivity extends ActionBarActivity {
         chkToday = (CheckBox)findViewById(R.id.chkToday);
 
         // Font path
-        String fontPath = "fonts/RobotoTTF/Roboto-Medium.ttf";
+        String fontPath0 = "fonts/antipasto/Antipasto_regular.otf";
+        String fontPath1 = "fonts/RobotoTTF/Roboto-Medium.ttf";
         String fontPath2 = "fonts/RobotoTTF/Roboto-Bold.ttf";
         // Loading Font Face
-        Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
-        Typeface tf2 = Typeface.createFromAsset(getAssets(), fontPath2);
+        Typeface tf = Typeface.createFromAsset(getAssets(), fontPath0);
+        Typeface tf2 = Typeface.createFromAsset(getAssets(), fontPath1);
         // Applying font
         btnFecha.setTypeface(tf);
-        chkToday.setTypeface(tf);
-        btnReservar.setTypeface(tf2);
+        chkToday.setTypeface(tf2);
 
         nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
@@ -187,12 +189,13 @@ public class reservationActivity extends ActionBarActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[4];
-
-        drawerItem[0] = new ObjectDrawerItem(android.R.drawable.ic_menu_today, getResources().getString(R.string.nav0));
-        drawerItem[1] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav1));
-        drawerItem[2] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav2));
-        drawerItem[3] = new ObjectDrawerItem(android.R.drawable.ic_dialog_map, getResources().getString(R.string.nav3));
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[6];
+        drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_ballsoccer, getResources().getString(R.string.nav));
+        drawerItem[1] = new ObjectDrawerItem(android.R.drawable.ic_menu_today, getResources().getString(R.string.nav0));
+        drawerItem[2] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav1));
+        drawerItem[3] = new ObjectDrawerItem(android.R.drawable.ic_menu_search, getResources().getString(R.string.nav2));
+        drawerItem[4] = new ObjectDrawerItem(android.R.drawable.ic_dialog_map, getResources().getString(R.string.nav3));
+        drawerItem[5] = new ObjectDrawerItem(android.R.drawable.ic_lock_power_off, getResources().getString(R.string.nav4));
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.listview_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
@@ -289,28 +292,56 @@ public class reservationActivity extends ActionBarActivity {
 
         switch (position) {
             case 0:
+                new mainActivity();
+                new Bundle();
+                this.startActivity(new Intent(this, mainActivity.class));
+                finish();
+                break;
+            case 1:
                 new eventsActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, eventsActivity.class));
                 finish();
                 break;
-            case 1:
+            case 2:
                 new searchActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, searchActivity.class));
                 finish();
                 break;
-            case 2:
+            case 3:
                 new searchInTime();
                 new Bundle();
                 this.startActivity(new Intent(this, searchInTime.class));
                 finish();
                 break;
-            case 3:
+            case 4:
                 new MapsActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, MapsActivity.class));
                 finish();
+                break;
+            case 5:
+                new AlertDialog.Builder(this)
+                        .setIcon(R.drawable.ic_launcher)
+                        .setTitle("Saliendo CanchaFinder")
+                        .setMessage("¿Esta seguro que desea cerrar sessión?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences sharedpreferences = getSharedPreferences
+                                        (LoginApp.MyPREFERENCES, Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedpreferences.edit();
+                                editor.clear();
+                                editor.commit();
+                                startActivity(new Intent(getApplicationContext(), LoginApp.class));
+                                finish();
+                            }
+
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
                 break;
             default:
                 break;

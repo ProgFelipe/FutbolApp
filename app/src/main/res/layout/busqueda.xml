@@ -8,7 +8,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/content_frame"
-    android:background="@drawable/background_shape">
+    android:background="@drawable/soccerfield">
 
     <SearchView
         android:layout_width="fill_parent"
@@ -28,7 +28,6 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#5af158"
         android:id="@+id/listViewSearch"
         android:gravity="center"
         android:fastScrollEnabled="true"
