@@ -16,13 +16,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxStatus;
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -40,15 +47,26 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private int sliderEffect;
+    private TextView newstext;
     //Slider
     private SliderLayout newsSlider;
+    //AQuery object
+    AQuery aq;
+    private String idUser;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actividad_principal);
-        TextView newstext = (TextView)findViewById(R.id.textViewMain);
+        newstext = (TextView)findViewById(R.id.textViewMain);
         newstext.setMovementMethod(new ScrollingMovementMethod());
         sliderEffect = 0;
+        //Instantiate AQuery Object
+        aq = new AQuery(this);
+        SharedPreferences sharedpreferences = getSharedPreferences
+                (LoginApp.MyPREFERENCES, Context.MODE_PRIVATE);
+        idUser =  LoginApp.idUsuario;
+        idUser = sharedpreferences.getString(idUser, "");
+
         //Nav Drawer
         mTitle = mDrawerTitle = getTitle();
         mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
@@ -131,7 +149,8 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
         newsSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
         newsSlider.setCustomAnimation(new DescriptionAnimation());
         newsSlider.setDuration(4000);
-
+        //
+        getPromotions();
     }
     @Override
     public void onBackPressed() {
@@ -302,6 +321,60 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
             mDrawerLayout.closeDrawer(mDrawerList);
         } else {
             //Log.e("MainActivity", "Error in creating fragment");
+        }
+    }
+
+    public void getPromotions(){
+        //JSON URL
+        String url = "http://solweb.co/reservas/api/promotion/promotions";
+        //Make Asynchronous call using AJAX method and show progress gif until get info
+        aq.progress(R.id.progressBarSearch).ajax(url, JSONObject.class, this,"jsonCallback");
+    }
+
+    public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
+        //When JSON is not null
+        String promociones = "";
+        if (json != null) {
+            //Log.v("JSON", json.toString());
+            String jsonResponse = "";
+            try {
+                //Get json as Array
+                JSONArray jsonArray = json.getJSONArray("promotion");
+                if (jsonArray != null) {
+                    int len = jsonArray.length();
+
+                    for (int i = 0; i < len; i++) {
+                        //Get the name of the field from array index
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        //SQLite
+                        if(idUser.equals(jsonObject.getString("id")))
+                        {
+                            promociones += jsonObject.getString("texto");
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                Toast.makeText(aq.getContext(), "Error in parsing JSON", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+            }
+            newstext.setText(promociones);
+        }
+        //When JSON is null
+        else {
+            //When response code is 500 (Internal Server Error)
+            if(status.getCode() == 500){
+                Toast.makeText(aq.getContext(),"Server is busy or down. Try again!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is 404 (Not found)
+            else if(status.getCode() == 404){
+                Toast.makeText(aq.getContext(),"Resource not found!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is other 500 or 404
+            else{
+                Toast.makeText(aq.getContext(),"Verifique su conexión",Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

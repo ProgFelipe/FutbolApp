@@ -171,7 +171,6 @@ public class reservationActivity extends Activity {
                     }
                     progressBar.setVisibility(View.VISIBLE);
                     getDisponibility();
-                    //new SetReservation().execute();
                 }else{
                     if(selectedHour == false && selectedDate == false){
                         Toast.makeText(getApplicationContext(), "Ingrese Hora y Fecha", Toast.LENGTH_LONG).show();

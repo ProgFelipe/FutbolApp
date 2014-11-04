@@ -10,17 +10,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -48,26 +47,62 @@ public class eventsActivity extends Activity {
     private CharSequence mTitle;
     private ListView listView;
     private DB_Manager manager;
+    private ArrayList idReservas;
+    private Button btnCancelar;
+    private String Seleccion;
+    private String idUser;
+    public static String cancelarId;
     //AQuery object
     AQuery aq;
+    //
+    private ShareActionProvider mShareActionProvider;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eventos);
-
+        cancelarId = "";
         Bundle extras = getIntent().getExtras();
         //getTheIdUser
         SharedPreferences sharedpreferences = getSharedPreferences
                 (LoginApp.MyPREFERENCES, Context.MODE_PRIVATE);
-        String idUser =  LoginApp.idUsuario;
+        idUser =  LoginApp.idUsuario;
         idUser = sharedpreferences.getString(idUser, "");
         Log.d("IDUsuario", idUser);
         manager = new DB_Manager(this);
+        btnCancelar = (Button) findViewById(R.id.btnCancelarReserva);
         listView = (ListView)findViewById(R.id.listViewReservado);
         //Instantiate AQuery Object
         aq = new AQuery(this);
         mTitle = mDrawerTitle = getTitle();
 
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cancelarId.length() > 0){
+                new AlertDialog.Builder(v.getContext())
+                        .setIcon(R.drawable.ic_launcher)
+                        .setTitle("¿Desea cancelar?")
+                        .setMessage(Seleccion)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                    cancelarReserva(cancelarId);
+                                    getReservationByUser(idUser);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }else{Toast.makeText(v.getContext(),"Seleccione reserva a cancelar",Toast.LENGTH_LONG).show();}
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               Seleccion = listView.getItemAtPosition(position).toString();
+               cancelarId = idReservas.get(position).toString();
+            }
+        });
         mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -231,6 +266,7 @@ public class eventsActivity extends Activity {
     public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
         //When JSON is not null
         ArrayList reservas = new ArrayList();
+        idReservas = new ArrayList();
         if (json != null) {
             //Log.v("JSON", json.toString());
             String jsonResponse = "";
@@ -247,14 +283,14 @@ public class eventsActivity extends Activity {
 //{"reservation": [{"id":"46","name":"carlos","hour":"1900","day":"20","month":"05","year":"2014",
 // "description":"","idField":"41","idLogin":"5"}]}
 //Elements to calendar view
-
-                            Cursor c = manager.buscarCanchaById(jsonObject.getString("idField"));
+                        Cursor c = manager.buscarCanchaById(jsonObject.getString("idField"));
                         String nombreCancha = "";
                         if (c.moveToFirst()){ // data?
                             nombreCancha = c.getString(c.getColumnIndex("name"));
                         }
                         reservas.add("Reserva " + nombreCancha + " a las " + jsonObject.getString("hour") + " Día: " + jsonObject.getString("day") + "/" + jsonObject.getString("month") + "/" +
                                 jsonObject.getString("year"));
+                        idReservas.add(jsonObject.getString("id"));
                 //jsonObject.getString("description");
                 //jsonObject.getString("idField");
                 //jsonObject.getString("idLogin");
@@ -290,4 +326,37 @@ public class eventsActivity extends Activity {
             }
         }
     }
+
+    public void cancelarReserva(String idReserva){
+        //JSON URL
+        String url = "http://solweb.co/reservas/api/reservations/delete/"+idReserva;
+        //Make Asynchronous call using AJAX method and show progress gif until get info
+        aq.progress(R.id.progressBarSearch).ajax(url, String.class, this,"jsonCancel");
     }
+
+    public void jsonCancel(String url, String string, AjaxStatus status) {
+        if (string != null) {
+            try {
+                //Get json as Array
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                Toast.makeText(aq.getContext(), "Error in parsing JSON", Toast.LENGTH_LONG).show();
+            }
+        }
+        //When JSON is null
+        else {
+            //When response code is 500 (Internal Server Error)
+            if(status.getCode() == 500){
+                Toast.makeText(aq.getContext(),"Server is busy or down. Try again!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is 404 (Not found)
+            else if(status.getCode() == 404){
+                Toast.makeText(aq.getContext(),"Resource not found!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is other 500 or 404
+            else{
+                Toast.makeText(aq.getContext(),"Verifique su conexión",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+}
