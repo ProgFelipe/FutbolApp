@@ -27,6 +27,18 @@ android:layout_height="match_parent" >
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:id="@+id/btnCancelarReserva"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/btn_shape"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="right|bottom" />
 </FrameLayout>
 <ListView
     android:id="@+id/left_drawer"
