@@ -18,39 +18,66 @@ import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
+import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
+import com.facebook.Session;
+import com.facebook.SessionLoginBehavior;
+import com.facebook.SessionState;
 import com.facebook.android.Facebook;
+import com.facebook.widget.LoginButton;
+import com.facebook.widget.WebDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import example.futbolapp.database.local.DB_Manager;
 
-public class LoginApp extends FragmentActivity {
+public class LoginApp extends Activity {
 
     private String user;
     private String passw;
     public EditText usuario;
     public EditText password;
-    public Button btnlogin;
-    private ProgressDialog pDialog;
-    private Facebook fb;
-    private MainFragment mainFragment;
+
     public static final String name = "nameKey";
     public static final String pass = "passwordKey";
     public static final String MyPREFERENCES = "MyPrefs" ;
     public static final String idUsuario = "idUsuario";
+
+
+    private Button login;
+    private Button logout;
+    private Button publishButton;
+
+    private Session.StatusCallback sessionStatusCallback;
+    private Session currentSession;
+
     //AQuery object
     AQuery aq;
     SharedPreferences sharedpreferences;
     private static Boolean loginOK;
-    DB_Manager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login_app);
         //Instantiate AQuery Object
         aq = new AQuery(this);
+
+
+        // create instace for sessionStatusCallback
+        sessionStatusCallback = new Session.StatusCallback() {
+
+            @Override
+            public void call(Session session, SessionState state, Exception exception) {
+                onSessionStateChange(session, state, exception);
+
+            }
+        };
         /*if (savedInstanceState == null) {
             // Add the fragment on initial activity setup
             mainFragment = new MainFragment();
@@ -63,14 +90,142 @@ public class LoginApp extends FragmentActivity {
             mainFragment = (MainFragment) getSupportFragmentManager()
                     .findFragmentById(android.R.id.content);
         }*/
-        setContentView(R.layout.activity_login_app);
+        // publish button
+        publishButton = (Button) findViewById(R.id.shareButton);
+        //login button
+        login = (Button) findViewById(R.id.authButton);
+        // logout button
+        logout = (Button) findViewById(R.id.btnRegistro);
 
-       /*if(!mainFragment.isLoggedIn())
-        {
-            setContentView(R.layout.activity_login_app);
-        }else{
-           setContentView(R.layout.actividad_principal);
-        }*/
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                login.setVisibility(View.GONE);
+                connectToFB();
+                logout.setVisibility(View.VISIBLE);
+                publishButton.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (currentSession != null) {
+                    currentSession.closeAndClearTokenInformation();
+                    logout.setVisibility(View.GONE);
+                    publishButton.setVisibility(View.GONE);
+                    login.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        publishButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                publishStory();
+
+            }
+        });
+    }
+
+    /**
+     * Connects the user to facebook
+     */
+    public void connectToFB() {
+
+        List<String> permissions = new ArrayList<String>();
+        permissions.add("publish_stream");
+
+        currentSession = new Session.Builder(this).build();
+        currentSession.addCallback(sessionStatusCallback);
+
+        Session.OpenRequest openRequest = new Session.OpenRequest(this);
+        openRequest.setLoginBehavior(SessionLoginBehavior.SUPPRESS_SSO);
+        openRequest.setRequestCode(Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE);
+        openRequest.setPermissions(permissions);
+        currentSession.openForPublish(openRequest);
+
+    }
+    /**
+     * this method is used by the facebook API
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (currentSession != null) {
+            currentSession.onActivityResult(this, requestCode, resultCode, data);
+        }
+    }
+
+    /**
+     * manages the session state change. This method is called after the
+     * <code>connectToFB()</code> method.
+     *
+     * @param session
+     * @param state
+     * @param exception
+     */
+    private void onSessionStateChange(Session session, SessionState state,
+                                      Exception exception) {
+        if (session != currentSession) {
+            return;
+        }
+
+        if (state.isOpened()) {
+            // Log in just happened.
+            Toast.makeText(getApplicationContext(), "session opened",
+                    Toast.LENGTH_SHORT).show();
+        } else if (state.isClosed()) {
+            // Log out just happened. Update the UI.
+            Toast.makeText(getApplicationContext(), "session closed",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Publishes story on the logged user's wall
+     */
+    public void publishStory() {
+        Bundle params = new Bundle();
+        params.putString("name", "testing Android Share");
+        params.putString("caption", "test-caption: Felipe GI from android");
+        params.putString("description", "test-description");
+        params.putString("link", "https://www.youtube.com/watch?v=8zl_dPFyXcY");
+        params.putString("picture","http://icons.iconarchive.com/icons/martz90/circle/512/android-icon.png");
+
+        WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(this,currentSession, params))
+                .setOnCompleteListener(new WebDialog.OnCompleteListener() {
+
+                    @Override
+                    public void onComplete(Bundle values,FacebookException error) {
+                        if (error == null) {
+                            // When the story is posted, echo the success
+                            // and the post Id.
+                            final String postId = values.getString("post_id");
+                            if (postId != null) {
+                                // do some stuff
+                            } else {
+                                // User clicked the Cancel button
+                                Toast.makeText(getApplicationContext(),
+                                        "Publish cancelled", Toast.LENGTH_SHORT).show();
+                            }
+                        } else if (error instanceof FacebookOperationCanceledException) {
+                            // User clicked the "x" button
+                            Toast.makeText(getApplicationContext(),
+                                    "Publish cancelled", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Generic, ex: network error
+                            Toast.makeText(getApplicationContext(),
+                                    "Error posting story", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                }).setFrom("").build();
+        feedDialog.show();
+
     }
 
     @Override
@@ -159,23 +314,6 @@ public class LoginApp extends FragmentActivity {
 
     public void login(View view)
     {
-        /*
-        if (user.matches("")) {
-            Toast.makeText(this, "You did not enter a username", Toast.LENGTH_SHORT).show();
-        }
-        passw = password.getText().toString();
-        Log.v("User", usuario.getText().toString());
-        Log.v("Password ", passw);
-        Toast.makeText(getApplicationContext(), "usuario"+user, Toast.LENGTH_SHORT).show();
-        if(user.trim().equals(persona) && passw.trim().equals(contrasenia))
-        {
-        Intent intent = new Intent(this, mainActivity.class);
-        startActivity(intent);
-        }else
-        {
-          Toast.makeText(getApplicationContext(), "Verifique los datos", Toast.LENGTH_SHORT).show();
-        }*/
-        //SQlite
         usuario = (EditText)findViewById(R.id.usuarioLogin);
         password = (EditText)findViewById(R.id.passwordLogin);
         user = usuario.getText().toString().trim();
