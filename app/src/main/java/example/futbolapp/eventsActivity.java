@@ -12,12 +12,11 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.ShareActionProvider;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -38,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import example.futbolapp.View.DrawerItemCustomAdapter;
+import example.futbolapp.View.Item;
+import example.futbolapp.View.MyAdapter;
 import example.futbolapp.View.ObjectDrawerItem;
 import example.futbolapp.database.local.DB_Manager;
 
@@ -55,18 +56,18 @@ public class eventsActivity extends Activity {
     private DB_Manager manager;
     private ArrayList idReservas;
     private Button btnCancelar;
-    private Button btnShare;
     private String Seleccion;
     private Session currentSession;
     private String idUser;
     public static String cancelarId;
 
+    private ArrayList<Item> items;
     private Session.StatusCallback sessionStatusCallback;
 
     //AQuery object
     AQuery aq;
     //
-    private ShareActionProvider mShareActionProvider;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +85,7 @@ public class eventsActivity extends Activity {
 
             }
         };
+
         //getTheIdUser
         SharedPreferences sharedpreferences = getSharedPreferences
                 (LoginApp.MyPREFERENCES, Context.MODE_PRIVATE);
@@ -96,18 +98,6 @@ public class eventsActivity extends Activity {
         aq = new AQuery(this);
         mTitle = mDrawerTitle = getTitle();
 
-        btnShare = (Button) findViewById(R.id.btnShare);
-        btnShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentSession = getSession();
-                if(currentSession != null && currentSession.isOpened()) {
-                    publishEvents();
-                }else{
-                    connectToFB();
-                }
-            }
-        });
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,10 +122,11 @@ public class eventsActivity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               Seleccion = listView.getItemAtPosition(position).toString();
+               Seleccion = items.get(position).getTitle()+" "+items.get(position).getDescription();
                cancelarId = idReservas.get(position).toString();
             }
         });
+
         mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -181,6 +172,7 @@ public class eventsActivity extends Activity {
 
         getReservationByUser(idUser);
     }
+
 
     /**
      * this method is used by the facebook API
@@ -419,8 +411,9 @@ public class eventsActivity extends Activity {
                         if (c.moveToFirst()){ // data?
                             nombreCancha = c.getString(c.getColumnIndex("name"));
                         }
-                        reservas.add("Reserva " + nombreCancha + " a las " + jsonObject.getString("hour") + " Día: " + jsonObject.getString("day") + "/" + jsonObject.getString("month") + "/" +
-                                jsonObject.getString("year"));
+                        reservas.add(i+1+"."+ nombreCancha);
+                        reservas.add("hora: "+jsonObject.getString("hour") + "- Día: " + jsonObject.getString("day") + "/" + jsonObject.getString("month") + "/" +
+                                        jsonObject.getString("year"));
                         idReservas.add(jsonObject.getString("id"));
                 //jsonObject.getString("description");
                 //jsonObject.getString("idField");
@@ -433,12 +426,18 @@ public class eventsActivity extends Activity {
             } catch (Exception e) {
                 Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+            // 1. pass context and data to the custom adapter
+            items = generateData(reservas);
+            MyAdapter adapter2 = new MyAdapter(this, items);
+
+            // 3. setListAdapter
+            listView.setAdapter(adapter2);
+            /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                     this,
                     android.R.layout.simple_list_item_1,
                     reservas );
 
-            listView.setAdapter(arrayAdapter);
+            listView.setAdapter(arrayAdapter);*/
 
         }
         //When JSON is null
@@ -458,6 +457,14 @@ public class eventsActivity extends Activity {
         }
     }
 
+    public void shareOnFacebook(View view){
+        currentSession = getSession();
+        if(currentSession != null && currentSession.isOpened()) {
+            publishEvents();
+        }else{
+            connectToFB();
+        }
+    }
     public void cancelarReserva(String idReserva){
         //JSON URL
         String url = "http://solweb.co/reservas/api/reservations/delete/"+idReserva;
@@ -489,5 +496,13 @@ public class eventsActivity extends Activity {
                 Toast.makeText(aq.getContext(),"Verifique su conexión",Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    private ArrayList<Item> generateData(ArrayList <String> a){
+        ArrayList<Item> items = new ArrayList<Item>();
+        //items.add(new Item(a,b));
+        for(int i = 0; i < a.size(); i += 2){
+            items.add(new Item(a.get(i), a.get(i+1)));
+        }
+        return items;
     }
 }
