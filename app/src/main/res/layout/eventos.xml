@@ -39,6 +39,16 @@ android:layout_height="match_parent" >
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_gravity="right|bottom" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share"
+        android:id="@+id/btnShare"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_shape"
+        android:layout_gravity="right|top" />
 </FrameLayout>
 <ListView
     android:id="@+id/left_drawer"

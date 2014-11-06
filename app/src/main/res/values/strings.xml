@@ -26,6 +26,9 @@
     <string name="txtbsqFecha">## ## ##</string>
     <string name="txtbsqHora">##:##</string>
 
+
+    <string name="share">Share</string>
+
     <string name="loginText"></string>
     <string name="title_activity_login">CanchaFinder</string>
     <string name="action_settings">Settings</string>
