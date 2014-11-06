@@ -83,7 +83,7 @@ public class searchInTime extends Activity {
         minute = "";
         if(c.get(Calendar.DAY_OF_WEEK)+1 < 10){day =  "0"+Integer.toString(c.get(Calendar.DAY_OF_WEEK)+1);}else{
         day =  Integer.toString(c.get(Calendar.DAY_OF_WEEK)+1);}
-        if(c.get(Calendar.MONTH) < 10){month = "0"+Integer.toString(c.get(Calendar.MONTH));}else{
+        if(c.get(Calendar.MONTH)+1 < 10){month = "0"+Integer.toString(c.get(Calendar.MONTH)+1);}else{
         month = Integer.toString(c.get(Calendar.MONTH));}
         year = Integer.toString(c.get(Calendar.YEAR));
 
@@ -185,6 +185,7 @@ public class searchInTime extends Activity {
         public void onDateSet(DatePicker view, int yr, int m, int d) {
             // Do something with the date chosen by the user
             //Toast.makeText(getActivity().getBaseContext() , "Seleccionó:  día "+Integer.toString(day)+" mes "+Integer.toString(month), Toast.LENGTH_LONG).show();
+            m += 1;
             if(m < 10){
                 month = "0"+Integer.toString(m);
             }else{

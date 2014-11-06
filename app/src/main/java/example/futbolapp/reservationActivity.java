@@ -111,7 +111,6 @@ public class reservationActivity extends Activity {
         // Font path
         String fontPath0 = "fonts/antipasto/Antipasto_regular.otf";
         String fontPath1 = "fonts/RobotoTTF/Roboto-Medium.ttf";
-        String fontPath2 = "fonts/RobotoTTF/Roboto-Bold.ttf";
         // Loading Font Face
         Typeface tf = Typeface.createFromAsset(getAssets(), fontPath0);
         Typeface tf2 = Typeface.createFromAsset(getAssets(), fontPath1);
@@ -137,8 +136,8 @@ public class reservationActivity extends Activity {
                 if(b){
                     selectedDate = true;
                     Calendar c = Calendar.getInstance();
-                    day = c.get(Calendar.DAY_OF_WEEK);
-                    month = c.get(Calendar.MONTH);
+                    day = c.get(Calendar.DAY_OF_WEEK)+1;
+                    month = c.get(Calendar.MONTH)+1;
                     year = c.get(Calendar.YEAR);
                 }
             }
@@ -238,8 +237,8 @@ public class reservationActivity extends Activity {
         public void onDateSet(DatePicker view, int Year, int Month, int Day) {
             // Do something with the date chosen by the user
             selectedDate = true;
-            month = Month;
-            day = Day;
+            month = Month+1;
+            day = Day+1;
             year = Year;
 
         }
