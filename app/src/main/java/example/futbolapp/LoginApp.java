@@ -1,19 +1,18 @@
 package example.futbolapp;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -23,18 +22,17 @@ import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
-import com.facebook.android.Facebook;
-import com.facebook.widget.LoginButton;
 import com.facebook.widget.WebDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import example.futbolapp.database.local.DB_Manager;
 
 public class LoginApp extends Activity {
 
@@ -50,11 +48,11 @@ public class LoginApp extends Activity {
 
 
     private Button login;
-    private Button logout;
     private Button publishButton;
+    private Boolean logged;
 
     private Session.StatusCallback sessionStatusCallback;
-    private Session currentSession;
+    private static Session currentSession;
 
     //AQuery object
     AQuery aq;
@@ -67,8 +65,15 @@ public class LoginApp extends Activity {
         setContentView(R.layout.activity_login_app);
         //Instantiate AQuery Object
         aq = new AQuery(this);
+        logged = false;
+        TextView header = (TextView) findViewById(R.id.txtHeaderLogin);
+        header.setTextColor(Color.rgb(239, 252, 240));
 
+        EditText usuarioLogin = (EditText) findViewById(R.id.usuarioLogin);
+        usuarioLogin.setTextColor(Color.rgb(239, 252, 240));
 
+        EditText passwordLogin = (EditText) findViewById(R.id.passwordLogin);
+        passwordLogin.setTextColor(Color.rgb(239, 252, 240));
         // create instace for sessionStatusCallback
         sessionStatusCallback = new Session.StatusCallback() {
 
@@ -94,35 +99,26 @@ public class LoginApp extends Activity {
         publishButton = (Button) findViewById(R.id.shareButton);
         //login button
         login = (Button) findViewById(R.id.authButton);
-        // logout button
-        logout = (Button) findViewById(R.id.btnRegistro);
-
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login.setVisibility(View.GONE);
-                connectToFB();
-                logout.setVisibility(View.VISIBLE);
-                publishButton.setVisibility(View.VISIBLE);
-
-            }
-        });
-
-        logout.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (currentSession != null) {
-                    currentSession.closeAndClearTokenInformation();
-                    logout.setVisibility(View.GONE);
-                    publishButton.setVisibility(View.GONE);
-                    login.setVisibility(View.VISIBLE);
+                if(logged == false){
+                    connectToFB();
+                    publishButton.setVisibility(View.VISIBLE);
+                    logged = true;
+                    //startActivity(new Intent(getApplicationContext(), mainActivity.class));
+                    //finish();
+                }else{
+                    if (currentSession != null) {
+                        logged = false;
+                        currentSession.closeAndClearTokenInformation();
+                        publishButton.setVisibility(View.GONE);
+                    }
                 }
             }
         });
 
         publishButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 publishStory();
@@ -148,6 +144,9 @@ public class LoginApp extends Activity {
         openRequest.setPermissions(permissions);
         currentSession.openForPublish(openRequest);
 
+    }
+    public static Session getSession(){
+        return currentSession;
     }
     /**
      * this method is used by the facebook API
@@ -227,6 +226,7 @@ public class LoginApp extends Activity {
         feedDialog.show();
 
     }
+
 
     @Override
     protected void onResume() {
@@ -323,6 +323,12 @@ public class LoginApp extends Activity {
         }
         if (passw.matches("")) {
             Toast.makeText(this, "Ingrese Contraseña", Toast.LENGTH_SHORT).show();
+        }else{
+            try {
+                passw = sha1(passw);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
         }
         Log.v("User", usuario.getText().toString());
         Log.v("Password ", passw);
@@ -330,6 +336,15 @@ public class LoginApp extends Activity {
         checkUser();
     }
 
+    public static String sha1(String input) throws NoSuchAlgorithmException {
+        MessageDigest mDigest = MessageDigest.getInstance("SHA1");
+        byte[] result = mDigest.digest(input.getBytes());
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < result.length; i++) {
+            sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        return sb.toString();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
