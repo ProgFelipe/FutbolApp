@@ -303,20 +303,24 @@ public class LoginApp extends Activity {
         password = (EditText)findViewById(R.id.passwordLogin);
         user = usuario.getText().toString().trim();
         passw = password.getText().toString().trim();
-        if (user.matches("")) {
-            Toast.makeText(this, "Ingrese Usuario", Toast.LENGTH_SHORT).show();
-        }
-        if (passw.matches("")) {
-            Toast.makeText(this, "Ingrese Contraseña", Toast.LENGTH_SHORT).show();
-        }else{
-            try {
-                passw = sha1(passw);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
+        if (user.matches("") && passw.matches("")) {
+            Toast.makeText(this, "Ingrese Usuario y Contraseña", Toast.LENGTH_SHORT).show();
+        }else {
+            if (user.matches("")) {
+                Toast.makeText(this, "Ingrese Usuario", Toast.LENGTH_SHORT).show();
+            }else
+            if (passw.matches("")) {
+                Toast.makeText(this, "Ingrese Contraseña", Toast.LENGTH_SHORT).show();
+            } else {
+                try {
+                    passw = sha1(passw);
+                    loginOK = false;
+                    checkUser();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        loginOK = false;
-        checkUser();
     }
 
     public static String sha1(String input) throws NoSuchAlgorithmException {

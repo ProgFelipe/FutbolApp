@@ -36,9 +36,6 @@
     <string name="title_activity_login_fut_app">Login CanchaFinder</string>
     <string name="title_activity_login_app">CanchaFinder</string>
     <string name="largeText">
-        Noticias y novedades de canchas
-        Promociones
-        Eventos
     </string>
     <string name="open_drawer">Drawer abierto</string>
     <string name="close_drawer">Drawer cerrado</string>
