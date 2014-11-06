@@ -357,10 +357,10 @@ public class eventsActivity extends Activity {
                                 SharedPreferences.Editor editor = sharedpreferences.edit();
                                 editor.clear();
                                 editor.commit();
-                                Intent intent = new Intent(getApplicationContext(), LoginApp.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                                finish();
+                                Intent i = new Intent(eventsActivity.this, LoginApp.class);
+                                // set the new task and clear flags
+                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(i);
                             }
 
                         })

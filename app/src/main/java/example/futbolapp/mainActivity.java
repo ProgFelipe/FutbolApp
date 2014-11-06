@@ -257,32 +257,30 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
             case 0:
                 new mainActivity();
                 new Bundle();
-                this.startActivity(new Intent(this, mainActivity.class));
-                finish();
+                Intent i = new Intent(mainActivity.this, mainActivity.class);
+                // set the new task and clear flags
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
                 break;
             case 1:
                 new eventsActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, eventsActivity.class));
-                finish();
                 break;
             case 2:
                 new searchActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, searchActivity.class));
-                finish();
                 break;
             case 3:
                 new searchInTime();
                 new Bundle();
                 this.startActivity(new Intent(this, searchInTime.class));
-                finish();
                 break;
             case 4:
                 new MapsActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, MapsActivity.class));
-                finish();
                 break;
             case 5:
                 new AlertDialog.Builder(this)
@@ -297,10 +295,10 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                                 SharedPreferences.Editor editor = sharedpreferences.edit();
                                 editor.clear();
                                 editor.commit();
-                                Intent intent = new Intent(getApplicationContext(), LoginApp.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                                finish();
+                                Intent i = new Intent(mainActivity.this, LoginApp.class);
+                                // set the new task and clear flags
+                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(i);
                                /* Session session = Session.getActiveSession();
                                 if (session != null) {
                                     session.closeAndClearTokenInformation();
