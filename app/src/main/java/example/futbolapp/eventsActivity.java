@@ -357,7 +357,9 @@ public class eventsActivity extends Activity {
                                 SharedPreferences.Editor editor = sharedpreferences.edit();
                                 editor.clear();
                                 editor.commit();
-                                startActivity(new Intent(getApplicationContext(), LoginApp.class));
+                                Intent intent = new Intent(getApplicationContext(), LoginApp.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
                                 finish();
                             }
 

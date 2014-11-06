@@ -317,7 +317,9 @@ public class searchInTime extends Activity {
                                 SharedPreferences.Editor editor = sharedpreferences.edit();
                                 editor.clear();
                                 editor.commit();
-                                startActivity(new Intent(getApplicationContext(), LoginApp.class));
+                                Intent intent = new Intent(getApplicationContext(), LoginApp.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
                                 finish();
                             }
 
@@ -374,11 +376,6 @@ public class searchInTime extends Activity {
                         pDialog.dismiss();
         }
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
     }
 
     public void getDisponibility(){

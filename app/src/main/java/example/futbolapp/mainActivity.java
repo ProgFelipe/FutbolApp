@@ -118,10 +118,6 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
         url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");*/
 
         HashMap<String,Integer> file_maps = new HashMap<String, Integer>();
-        /*file_maps.put("Hannibal",R.drawable.hannibal);
-        file_maps.put("Big Bang Theory",R.drawable.bigbang);
-        file_maps.put("House of Cards",R.drawable.house);
-        file_maps.put("Game of Thrones", R.drawable.game_of_thrones);*/
         file_maps.put("NEWS 1",R.drawable.field1);
         file_maps.put("NEWS 2",R.drawable.field2);
         file_maps.put("NEW 3",R.drawable.field3);
@@ -262,26 +258,31 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                 new mainActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, mainActivity.class));
+                finish();
                 break;
             case 1:
                 new eventsActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, eventsActivity.class));
+                finish();
                 break;
             case 2:
                 new searchActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, searchActivity.class));
+                finish();
                 break;
             case 3:
                 new searchInTime();
                 new Bundle();
                 this.startActivity(new Intent(this, searchInTime.class));
+                finish();
                 break;
             case 4:
                 new MapsActivity();
                 new Bundle();
                 this.startActivity(new Intent(this, MapsActivity.class));
+                finish();
                 break;
             case 5:
                 new AlertDialog.Builder(this)
@@ -296,12 +297,14 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                                 SharedPreferences.Editor editor = sharedpreferences.edit();
                                 editor.clear();
                                 editor.commit();
-                                startActivity(new Intent(getApplicationContext(), LoginApp.class));
+                                Intent intent = new Intent(getApplicationContext(), LoginApp.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
                                /* Session session = Session.getActiveSession();
                                 if (session != null) {
                                     session.closeAndClearTokenInformation();
                                 }*/
-                                finish();
                             }
 
                         })
@@ -348,10 +351,10 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                         //Get the name of the field from array index
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         //SQLite
-                        if(idUser.equals(jsonObject.getString("id")))
-                        {
+                        //if(idUser.equals(jsonObject.getString("id")))
+                        //{
                             promociones += jsonObject.getString("texto");
-                        }
+                        //}
                     }
                 }
             } catch (JSONException e) {

@@ -131,10 +131,7 @@ public class MapsActivity extends FragmentActivity implements OnInfoWindowClickL
         super.onResume();
         setUpMapIfNeeded();
     }
-    @Override
-    public void onBackPressed() {
-        finish();
-    }
+
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -331,7 +328,9 @@ public class MapsActivity extends FragmentActivity implements OnInfoWindowClickL
                                 SharedPreferences.Editor editor = sharedpreferences.edit();
                                 editor.clear();
                                 editor.commit();
-                                startActivity(new Intent(getApplicationContext(), LoginApp.class));
+                                Intent intent = new Intent(getApplicationContext(), LoginApp.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
                                 finish();
                             }
 
