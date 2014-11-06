@@ -12,12 +12,9 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -134,7 +131,10 @@ public class MapsActivity extends FragmentActivity implements OnInfoWindowClickL
         super.onResume();
         setUpMapIfNeeded();
     }
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -353,7 +353,7 @@ public class MapsActivity extends FragmentActivity implements OnInfoWindowClickL
             mDrawerLayout.closeDrawer(mDrawerList);
 
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
+            //Log.e("MainActivity", "Error in creating fragment");
         }
 
     }

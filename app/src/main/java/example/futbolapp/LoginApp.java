@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -95,8 +94,6 @@ public class LoginApp extends Activity {
             mainFragment = (MainFragment) getSupportFragmentManager()
                     .findFragmentById(android.R.id.content);
         }*/
-        // publish button
-        publishButton = (Button) findViewById(R.id.shareButton);
         //login button
         login = (Button) findViewById(R.id.authButton);
         login.setOnClickListener(new View.OnClickListener() {
@@ -104,25 +101,15 @@ public class LoginApp extends Activity {
             public void onClick(View v) {
                 if(logged == false){
                     connectToFB();
-                    publishButton.setVisibility(View.VISIBLE);
                     logged = true;
-                    //startActivity(new Intent(getApplicationContext(), mainActivity.class));
-                    //finish();
+                    startActivity(new Intent(getApplicationContext(), mainActivity.class));
+                    finish();
                 }else{
                     if (currentSession != null) {
                         logged = false;
                         currentSession.closeAndClearTokenInformation();
-                        publishButton.setVisibility(View.GONE);
                     }
                 }
-            }
-        });
-
-        publishButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                publishStory();
-
             }
         });
     }
@@ -330,8 +317,6 @@ public class LoginApp extends Activity {
                 e.printStackTrace();
             }
         }
-        Log.v("User", usuario.getText().toString());
-        Log.v("Password ", passw);
         loginOK = false;
         checkUser();
     }

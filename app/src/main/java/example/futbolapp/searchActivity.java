@@ -14,12 +14,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -36,8 +33,6 @@ import example.futbolapp.View.ObjectDrawerItem;
 import example.futbolapp.database.local.DB_Manager;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
-
-import java.util.ArrayList;
 
 /**
  * Created by Usuario on 11/09/2014.
@@ -243,7 +238,6 @@ public class searchActivity extends Activity {
             pDialog.setMessage("Por favor espere...");
             pDialog.setCancelable(false);
             pDialog.show();
-            //Toast.makeText(getApplicationContext(),"Buscando cancha ...", Toast.LENGTH_SHORT).show();
         }
         @Override
         protected Void doInBackground(Void... voids) {
@@ -255,8 +249,6 @@ public class searchActivity extends Activity {
             adapter.changeCursor(cursor);
             if (pDialog.isShowing())
                 pDialog.dismiss();
-            //Toast.makeText(getApplicationContext(),"Busqueda Finalizada ...", Toast.LENGTH_SHORT).show();
-            //Show getted information of fields
         }
     }
     @Override
@@ -370,7 +362,7 @@ public class searchActivity extends Activity {
             mDrawerLayout.closeDrawer(mDrawerList);
 
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
+            //Log.e("MainActivity", "Error in creating fragment");
         }
 
     }

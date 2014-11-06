@@ -15,7 +15,6 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,8 +24,6 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.net.URL;
 
 import example.futbolapp.View.DrawerItemCustomAdapter;
 import example.futbolapp.View.ObjectDrawerItem;
@@ -73,7 +70,6 @@ public class fieldActivity extends Activity {
         //Get Database cursor
         manager = new DB_Manager(this);
         Cursor c = manager.buscarCanchaById(value);
-        Log.v("Nombre :", Integer.toString(c.getCount()));
         try {
             c.moveToFirst();
             if(c != null && c.getCount() > 0){
@@ -269,5 +265,9 @@ public class fieldActivity extends Activity {
           //Log.e("MainActivity", "Error in creating fragment");
         }
 
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

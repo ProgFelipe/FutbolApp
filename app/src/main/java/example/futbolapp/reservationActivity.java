@@ -11,22 +11,16 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,8 +31,6 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -56,7 +48,6 @@ import java.util.List;
 
 import example.futbolapp.View.DrawerItemCustomAdapter;
 import example.futbolapp.View.ObjectDrawerItem;
-import example.futbolapp.database.external.DB_ManagerExt;
 import example.futbolapp.database.external.ServicesHandler;
 import example.futbolapp.database.local.DB_Manager;
 
@@ -269,6 +260,11 @@ public class reservationActivity extends Activity {
     }
 
     @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
         getActionBar().setTitle(mTitle);
@@ -359,7 +355,7 @@ public class reservationActivity extends Activity {
             mDrawerLayout.closeDrawer(mDrawerList);
 
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
+            //Log.e("MainActivity", "Error in creating fragment");
         }
 
     }
@@ -410,8 +406,6 @@ public class reservationActivity extends Activity {
             params.add(new BasicNameValuePair("year", Integer.toString(year).trim()));
             // Making a request to url and getting response
             String jsonStr = sh.makeServiceCall(url, ServicesHandler.GET, params);
-
-            Log.v("Response: ", "> " + jsonStr);
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
@@ -427,7 +421,7 @@ public class reservationActivity extends Activity {
                     e.printStackTrace();
                 }
             } else {
-                Log.e("ServiceHandler", "Couldn't get any data from the url");
+                //Log.e("ServiceHandler", "Couldn't get any data from the url");
             }
 
             return null;
@@ -469,8 +463,6 @@ public class reservationActivity extends Activity {
         if (result != null) {
             //Log.v("JSON", json.toString());
             String jsonResponse = "";
-
-            Log.e(" Respuesta ", result);
             if(result.equals("Exitoso")){
                 createNotification();
             }
@@ -521,9 +513,7 @@ public class reservationActivity extends Activity {
                 }
                 //Log.d("NUMERO DE IDS ENCONTRADAS ", Integer.toString(idFields.size()));
                 int fieldpresent = 0;
-                Log.e("IDCANCHA DADA ===>  ", idField);
                 for(int count = 0 ; count <idFields.size(); count++){
-                    Log.e("===> ====>========>========>[", idFields.get(count).toString());
                     if(idField.equals(idFields.get(count))){
                         fieldpresent++;
                     }

@@ -16,10 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
@@ -290,8 +288,7 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                         .setIcon(R.drawable.ic_launcher)
                         .setTitle("Saliendo CanchaFinder")
                         .setMessage("¿Esta seguro que desea cerrar sessión?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                        {
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SharedPreferences sharedpreferences = getSharedPreferences
@@ -300,6 +297,10 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                                 editor.clear();
                                 editor.commit();
                                 startActivity(new Intent(getApplicationContext(), LoginApp.class));
+                               /* Session session = Session.getActiveSession();
+                                if (session != null) {
+                                    session.closeAndClearTokenInformation();
+                                }*/
                                 finish();
                             }
 

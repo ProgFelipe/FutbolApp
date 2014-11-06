@@ -15,28 +15,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MergeCursor;
-import android.graphics.Point;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.text.format.DateFormat;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -44,20 +35,15 @@ import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import example.futbolapp.View.DrawerItemCustomAdapter;
 import example.futbolapp.View.ObjectDrawerItem;
-import example.futbolapp.database.external.ServicesHandler;
 import example.futbolapp.database.local.DB_Manager;
 
 /**
@@ -88,8 +74,6 @@ public class searchInTime extends Activity {
     private static Button btnDate;
     private Button btnBuscar;
     private static Button btnHour;
-    // soccer fields JSONArray
-    JSONArray fields = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,9 +81,11 @@ public class searchInTime extends Activity {
         //Get System Date
         Calendar c = Calendar.getInstance();
         minute = "";
-        day = "";
-        month = "";
-        year = "";
+        if(c.get(Calendar.DAY_OF_WEEK)+1 < 10){day =  "0"+Integer.toString(c.get(Calendar.DAY_OF_WEEK)+1);}else{
+        day =  Integer.toString(c.get(Calendar.DAY_OF_WEEK)+1);}
+        if(c.get(Calendar.MONTH) < 10){month = "0"+Integer.toString(c.get(Calendar.MONTH));}else{
+        month = Integer.toString(c.get(Calendar.MONTH));}
+        year = Integer.toString(c.get(Calendar.YEAR));
 
         //Instantiate AQuery Object
         aq = new AQuery(this);
@@ -107,6 +93,7 @@ public class searchInTime extends Activity {
         btnDate = (Button)findViewById(R.id.btnBsqFecha);
         btnBuscar = (Button)findViewById(R.id.btnBsqInTime);
         txtFecha = (TextView) findViewById(R.id.txtresultFecha);
+        txtFecha.setText(day+"/"+month+"/"+year);
         txtHora = (TextView) findViewById(R.id.txtresultHora);
         txtFecha.setText(day + "/" + month + "/"  + year);
         // Font path
@@ -127,11 +114,9 @@ public class searchInTime extends Activity {
             public void onClick(View view) {
                 //1200-10-09-2014
                 url = "http://solweb.co/reservas/api/reservations/fieldsavailability/" + hour + "-" + day + "-" + month + "-" + year;
-                //Log.d("URL URL URL URL URL URL URL URL ", url);
                 // Calling async task to get json
                 new GetFields().execute();
-                /*Toast.makeText(getBaseContext() , "Buscando: "+Integer.toString(hour)+":"+Integer.toString(minute)+", "+Integer.toString(day)+"/"+
-                        "/"+Integer.toString(month)+"/"+Integer.toString(year), Toast.LENGTH_LONG).show();*/}
+           }
         });
         //Drawer
         mTitle = mDrawerTitle = getTitle();
@@ -353,7 +338,7 @@ public class searchInTime extends Activity {
             mDrawerLayout.closeDrawer(mDrawerList);
 
         } else {
-            Log.e("MainActivity", "Error in creating fragment");
+            //Log.e("MainActivity", "Error in creating fragment");
         }
 
     }
@@ -390,7 +375,10 @@ public class searchInTime extends Activity {
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 
     public void getDisponibility(){
         //JSON URL
@@ -400,7 +388,6 @@ public class searchInTime extends Activity {
 
     public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
         idFields = new ArrayList();
-        Log.e("URL URL URL", url);
         //When JSON is not null
         if (json != null) {
             //Log.v("JSON", json.toString());
@@ -414,12 +401,10 @@ public class searchInTime extends Activity {
                     for (int i = 0; i < len; i++) {
                         //Get the events
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        Log.e("ID ENCONTRADA", jsonObject.getString("id"));
                         idFields.add(jsonObject.getString("id"));
                     }
                 }
                 showPopup(searchInTime.this);
-                //Log.d("NUMERO DE IDS ENCONTRADAS ", Integer.toString(idFields.size()));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 Toast.makeText(aq.getContext(), "Error in parsing JSON", Toast.LENGTH_LONG).show();

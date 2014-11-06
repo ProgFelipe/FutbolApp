@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,12 +23,19 @@ import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
+import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
+import com.facebook.Session;
+import com.facebook.SessionLoginBehavior;
+import com.facebook.SessionState;
+import com.facebook.widget.WebDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import example.futbolapp.View.DrawerItemCustomAdapter;
 import example.futbolapp.View.ObjectDrawerItem;
@@ -49,9 +55,14 @@ public class eventsActivity extends Activity {
     private DB_Manager manager;
     private ArrayList idReservas;
     private Button btnCancelar;
+    private Button btnShare;
     private String Seleccion;
+    private Session currentSession;
     private String idUser;
     public static String cancelarId;
+
+    private Session.StatusCallback sessionStatusCallback;
+
     //AQuery object
     AQuery aq;
     //
@@ -61,13 +72,23 @@ public class eventsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eventos);
         cancelarId = "";
+        currentSession = null;
         Bundle extras = getIntent().getExtras();
+
+        // create instace for sessionStatusCallback
+        sessionStatusCallback = new Session.StatusCallback() {
+
+            @Override
+            public void call(Session session, SessionState state, Exception exception) {
+                onSessionStateChange(session, state, exception);
+
+            }
+        };
         //getTheIdUser
         SharedPreferences sharedpreferences = getSharedPreferences
                 (LoginApp.MyPREFERENCES, Context.MODE_PRIVATE);
         idUser =  LoginApp.idUsuario;
         idUser = sharedpreferences.getString(idUser, "");
-        Log.d("IDUsuario", idUser);
         manager = new DB_Manager(this);
         btnCancelar = (Button) findViewById(R.id.btnCancelarReserva);
         listView = (ListView)findViewById(R.id.listViewReservado);
@@ -75,6 +96,18 @@ public class eventsActivity extends Activity {
         aq = new AQuery(this);
         mTitle = mDrawerTitle = getTitle();
 
+        btnShare = (Button) findViewById(R.id.btnShare);
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentSession = getSession();
+                if(currentSession != null && currentSession.isOpened()) {
+                    publishEvents();
+                }else{
+                    connectToFB();
+                }
+            }
+        });
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,6 +182,102 @@ public class eventsActivity extends Activity {
         getReservationByUser(idUser);
     }
 
+    /**
+     * this method is used by the facebook API
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (currentSession != null) {
+            currentSession.onActivityResult(this, requestCode, resultCode, data);
+        }
+    }
+    /**
+     * Connects the user to facebook
+     */
+    public void connectToFB() {
+        List<String> permissions = new ArrayList<String>();
+        permissions.add("publish_stream");
+
+        currentSession = new Session.Builder(this).build();
+        currentSession.addCallback(sessionStatusCallback);
+
+        Session.OpenRequest openRequest = new Session.OpenRequest(this);
+        openRequest.setLoginBehavior(SessionLoginBehavior.SUPPRESS_SSO);
+        openRequest.setRequestCode(Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE);
+        openRequest.setPermissions(permissions);
+        currentSession.openForPublish(openRequest);
+    }
+    /**
+     * manages the session state change. This method is called after the
+     * <code>connectToFB()</code> method.
+     *
+     * @param session
+     * @param state
+     * @param exception
+     */
+    private void onSessionStateChange(Session session, SessionState state,
+                                      Exception exception) {
+        if (session != currentSession) {
+            return;
+        }
+
+        if (state.isOpened()) {
+            // Log in just happened.
+            Toast.makeText(getApplicationContext(), "session opened",
+                    Toast.LENGTH_SHORT).show();
+        } else if (state.isClosed()) {
+            // Log out just happened. Update the UI.
+            Toast.makeText(getApplicationContext(), "session closed",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public Session getSession(){
+        return currentSession;
+    }
+    /**
+     * Publishes story on the logged user's wall
+     */
+    public void publishEvents() {
+        Bundle params = new Bundle();
+        params.putString("name", "Reserva Cancha Finder");
+        params.putString("caption", "Futbolista: Felipe");
+        params.putString("description", Seleccion);
+        params.putString("link", "http://www.solweb.co/reservas/CanchaFinder/index.php");
+        params.putString("picture","http://www.solweb.co/reservas/api_movil/ic_launcher.png");
+
+        WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(this,currentSession, params))
+                .setOnCompleteListener(new WebDialog.OnCompleteListener() {
+
+                    @Override
+                    public void onComplete(Bundle values,FacebookException error) {
+                        if (error == null) {
+                            // When the story is posted, echo the success
+                            // and the post Id.
+                            final String postId = values.getString("post_id");
+                            if (postId != null) {
+                                // do some stuff
+                            } else {
+                                // User clicked the Cancel button
+                                Toast.makeText(getApplicationContext(),
+                                        "Publish cancelled", Toast.LENGTH_SHORT).show();
+                            }
+                        } else if (error instanceof FacebookOperationCanceledException) {
+                            // User clicked the "x" button
+                            Toast.makeText(getApplicationContext(),
+                                    "Publish cancelled", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Generic, ex: network error
+                            Toast.makeText(getApplicationContext(),
+                                    "Error posting story", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                }).setFrom("").build();
+        feedDialog.show();
+
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -250,7 +379,7 @@ public class eventsActivity extends Activity {
                 mDrawerLayout.closeDrawer(mDrawerList);
 
             } else {
-                Log.e("MainActivity", "Error in creating fragment");
+                //Log.e("MainActivity", "Error in creating fragment");
             }
 
         }
