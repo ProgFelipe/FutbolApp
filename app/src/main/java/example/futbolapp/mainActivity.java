@@ -8,10 +8,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.method.ScrollingMovementMethod;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import example.futbolapp.View.DrawerItemCustomAdapter;
@@ -144,8 +150,17 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
         newsSlider.setCustomAnimation(new DescriptionAnimation());
         newsSlider.setDuration(4000);
         //
-        getPromotions();
+        getData("http://solweb.co/reservas/api/promotion/promotions", "promotions");
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
@@ -172,8 +187,17 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
-        return super.onOptionsItemSelected(item);
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_matchs:
+                getData("http://www.football-data.org/fixtures","fixtures");
+                return true;
+            case R.id.action_aboutus:
+                getData("http://solweb.co/reservas/api/promotion/promotions","promotions");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -326,14 +350,14 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
         }
     }
 
-    public void getPromotions(){
+    public void getData(String url, String type){
         //JSON URL
-        String url = "http://solweb.co/reservas/api/promotion/promotions";
         //Make Asynchronous call using AJAX method and show progress gif until get info
-        aq.progress(R.id.progressBarSearch).ajax(url, JSONObject.class, this,"jsonCallback");
+        if(type.equals("promotions")){aq.progress(R.id.progressBarSearch).ajax(url, JSONObject.class, this,"jsonCallbackPromotions");}
+        if(type.equals("fixtures")){ aq.progress(R.id.progressBarSearch).ajax(url, JSONArray.class, this,"jsonCallbackFixtures");}
     }
 
-    public void jsonCallback(String url, JSONObject json, AjaxStatus status) {
+    public void jsonCallbackPromotions(String url, JSONObject json, AjaxStatus status) {
         //When JSON is not null
         String promociones = "";
         if (json != null) {
@@ -344,15 +368,10 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                 JSONArray jsonArray = json.getJSONArray("promotion");
                 if (jsonArray != null) {
                     int len = jsonArray.length();
-
                     for (int i = 0; i < len; i++) {
                         //Get the name of the field from array index
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        //SQLite
-                        //if(idUser.equals(jsonObject.getString("id")))
-                        //{
                             promociones += jsonObject.getString("texto");
-                        //}
                     }
                 }
             } catch (JSONException e) {
@@ -361,6 +380,58 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
             } catch (Exception e) {
                 Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
+            newstext.setGravity(Gravity.CENTER);
+            newstext.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
+            newstext.setText(promociones);
+        }
+        //When JSON is null
+        else {
+            //When response code is 500 (Internal Server Error)
+            if(status.getCode() == 500){
+                Toast.makeText(aq.getContext(),"Server is busy or down. Try again!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is 404 (Not found)
+            else if(status.getCode() == 404){
+                Toast.makeText(aq.getContext(),"Resource not found!",Toast.LENGTH_SHORT).show();
+            }
+            //When response code is other 500 or 404
+            else{
+                Toast.makeText(aq.getContext(),"Verifique su conexión",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    public void jsonCallbackFixtures(String url, JSONArray json, AjaxStatus status) {
+        //When JSON is not null
+        String promociones = "PARTIDOS HOY\n";
+        if (json != null) {
+            try {
+                //Get json as Array
+                if (json != null) {
+                    Calendar c = Calendar.getInstance();
+                    String dia= "";
+                    if(c.get(Calendar.DAY_OF_WEEK)+1 < 10){dia =  "0"+Integer.toString(c.get(Calendar.DAY_OF_WEEK)+1);}else{
+                        dia =  Integer.toString(c.get(Calendar.DAY_OF_WEEK)+1);}
+                    int len = json.length();
+                    for (int i = 0; i < len; i++) {
+                        JSONObject jsonObject = json.getJSONObject(i);
+                        String date = jsonObject.getString("date");
+                        String month = date.substring(5, 7);
+                        String time = date.substring(11, 19);
+                        String day = date.substring(8, 10);
+                        if(day.equals(dia)){
+                            promociones += "L: "+jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam")+" :V\n";
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                Toast.makeText(aq.getContext(), "Error in parsing JSON", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+            }
+            newstext.setTypeface(null, Typeface.BOLD);
+            newstext.setGravity(Gravity.LEFT);
+            newstext.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
             newstext.setText(promociones);
         }
         //When JSON is null

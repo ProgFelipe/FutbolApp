@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -463,6 +462,17 @@ public class eventsActivity extends Activity {
             publishEvents();
         }else{
             connectToFB();
+        }
+    }
+    public void shareWhereYouWant(){
+        if(Seleccion != null){
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "Cancha Finder,"+Seleccion);
+        startActivity(Intent.createChooser(shareIntent, "Compartiendo Reserva"));}else{
+            Toast.makeText(getApplicationContext(),"Seleccione un item de la lista", Toast.LENGTH_SHORT).show();
         }
     }
     public void cancelarReserva(String idReserva){

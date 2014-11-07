@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MyActivity" >
     <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/ic_ballsoccer"
-        android:title="Configuración"
-        yourapp:showAsAction="ifRoom"
-        yourapp:actionProviderClass="android.support.v7.widget.ShareActionProvider"
-        />
-    <item
-        android:id="@+id/action_aboutus"
-        android:icon="@drawable/ic_ballsoccer"
-        android:title="Acerca de"
-        yourapp:showAsAction="ifRoom"
-        yourapp:actionProviderClass="android.support.v7.widget.ShareActionProvider"
-        />
+        android:id="@+id/rest_overflow_menu"
+        android:icon="@android:drawable/ic_input_add"
+        android:showAsAction="ifRoom"
+        android:visible="true">
+        <menu>
+            <item
+                android:id="@+id/action_matchs"
+                android:title="Partidos"
+                android:showAsAction="always"
+                />
+            <item
+                android:id="@+id/action_aboutus"
+                android:title="Promociones"
+                android:showAsAction="always"
+                />
+
+        </menu>
+    </item>
 </menu>
