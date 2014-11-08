@@ -11,11 +11,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.security.NoSuchAlgorithmException;
 
 /**
@@ -58,7 +53,8 @@ public class RegisterActivity extends Activity{
                 } else if (contrasenia.getText().toString().trim().equals("")) {
                     Toast.makeText(getApplicationContext(), "Ingrese la contraseña", Toast.LENGTH_SHORT).show();
                 } else if(contrasenia.getText().toString().trim().equals(recontrasenia.getText().toString())){
-                    checkUsuario();
+                    //checkUsuario();
+                    registroUrl();
                 }else{
                     Toast.makeText(getApplicationContext(), "Las contraseñas no coincide", Toast.LENGTH_SHORT).show();
                 }
@@ -81,10 +77,20 @@ public class RegisterActivity extends Activity{
     public void registrado(String url, String result, AjaxStatus status) {
         //When result is not null
         if (result != null) {
-            if(result.equals("Exitoso")){
-                getUserId();
-            }
+            if(result.equals("0"))
+            {Toast.makeText(aq.getContext(), "El Nombre de usuario ya existe", Toast.LENGTH_SHORT).show();
+            }else{
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString(name, user);
+                editor.putString(pass, password);
+                editor.putString(idUsuario, result);
+                editor.commit();
 
+                Toast.makeText(aq.getContext(), "Bienvenido a CanchaFinder "+user, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, mainActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
         //When JSON is null
         else {
@@ -117,119 +123,4 @@ public class RegisterActivity extends Activity{
         }
         super.onResume();
     }
-    /*
-    *Check if user Exist
-     */
-    public void checkUsuario(){
-        user = usuario.getText().toString();
-        String urlUsers = "http://solweb.co/reservas/api/login/logins";
-        aq.ajax(urlUsers, JSONObject.class, this, "existenciaUserName");
-    }
-
-    public void getUserId(){
-        user = usuario.getText().toString();
-        String urlUsers = "http://solweb.co/reservas/api/login/logins";
-        aq.ajax(urlUsers, JSONObject.class, this, "getIdUser");
-    }
-    public void getIdUser(String url, JSONObject json, AjaxStatus status) {
-        //When JSON is not null
-        if (json != null) {
-            //Log.v("JSON", json.toString());
-            try {
-                //Get json as Array
-                JSONArray jsonArray = json.getJSONArray("login");
-                if (jsonArray != null) {
-                    int len = jsonArray.length();
-                    for (int i = 0; i < len; i++) {
-                        //Get the name of the field from array index
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if(user.equals(jsonObject.getString("user").trim())){
-                            SharedPreferences.Editor editor = sharedpreferences.edit();
-                            editor.putString(name, user);
-                            editor.putString(pass, password);
-                            editor.putString(idUsuario, jsonObject.getString("id"));
-                            editor.commit();
-                        }
-                    }
-                }
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                Toast.makeText(aq.getContext(), "Error in parsing JSON", Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-                Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
-            }
-            Toast.makeText(aq.getContext(), "Bienvenido a CanchaFinder "+user, Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, mainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-        //When JSON is null
-        else {
-            //When response code is 500 (Internal Server Error)
-            if(status.getCode() == 500){
-                Toast.makeText(aq.getContext(),"Server is busy or down. Try again!",Toast.LENGTH_SHORT).show();
-            }
-            //When response code is 404 (Not found)
-            else if(status.getCode() == 404){
-                Toast.makeText(aq.getContext(),"Resource not found!",Toast.LENGTH_SHORT).show();
-            }
-            //When response code is other 500 or 404
-            else{
-                Toast.makeText(aq.getContext(),"Verifique su conexión",Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    /*
-    Si usuario no existe procede a registrar
-     */
-    public void existenciaUserName(String url, JSONObject json, AjaxStatus status) {
-        //When JSON is not null
-        if (json != null) {
-            //Log.v("JSON", json.toString());
-            try {
-                //Get json as Array
-                JSONArray jsonArray = json.getJSONArray("login");
-                if (jsonArray != null) {
-                    int len = jsonArray.length();
-                    for (int i = 0; i < len; i++) {
-                        //Get the name of the field from array index
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if(user.equals(jsonObject.getString("user").trim())){
-                            UserExist = true;
-                            Toast.makeText(aq.getContext(), "El Nombre de usuario ya existe", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }
-                if(!UserExist){
-                    registroUrl();
-                    UserExist = false;
-                }else{
-                    UserExist = false;
-                }
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                Toast.makeText(aq.getContext(), "Algo anda mal revisa tu conexion o contactanos", Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-                Toast.makeText(aq.getContext(), "Algo anda mal revisa tu conexion o contactanos", Toast.LENGTH_LONG).show();
-            }
-        }
-
-        //When JSON is null
-        else {
-            //When response code is 500 (Internal Server Error)
-            if(status.getCode() == 500){
-                Toast.makeText(aq.getContext(),"Server is busy or down. Try again!",Toast.LENGTH_SHORT).show();
-            }
-            //When response code is 404 (Not found)
-            else if(status.getCode() == 404){
-                Toast.makeText(aq.getContext(),"Resource not found!",Toast.LENGTH_SHORT).show();
-            }
-            //When response code is other 500 or 404
-            else{
-                Toast.makeText(aq.getContext(),"Verifique su conexión",Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
 }
