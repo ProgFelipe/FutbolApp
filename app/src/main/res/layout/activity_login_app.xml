@@ -76,7 +76,6 @@
         android:background="@drawable/btn_default"
         android:layout_marginTop="44dp"
         android:layout_below="@+id/passwordLogin"
-        android:onClick="login"
         android:layout_marginBottom="14dp"
         android:layout_alignRight="@+id/txtHeaderLogin"
         android:layout_alignEnd="@+id/txtHeaderLogin"

@@ -422,6 +422,19 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                             promociones += "L: "+jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam")+" :V\n";
                         }
                     }
+                    if(c.get(Calendar.DAY_OF_WEEK)+1 < 10){dia =  "0"+Integer.toString(c.get(Calendar.DAY_OF_WEEK)+2);}else{
+                        dia =  Integer.toString(c.get(Calendar.DAY_OF_WEEK)+2);}
+                    promociones += "**MAÑANA**"+"\n";
+                    for (int i = 0; i < len; i++) {
+                        JSONObject jsonObject = json.getJSONObject(i);
+                        String date = jsonObject.getString("date");
+                        String month = date.substring(5, 7);
+                        String time = date.substring(11, 19);
+                        String day = date.substring(8, 10);
+                        if(day.equals(dia)){
+                            promociones += "L: "+jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam")+" :V\n";
+                        }
+                    }
                 }
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -429,6 +442,13 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
             } catch (Exception e) {
                 Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
+            /*
+            On List view improvements
+            *            String[] from = new String[]{manager.CN_Nombre,manager.CN_Telefono};
+            int [] to = new int[]{android.R.id.text1,android.R.id.text2};
+            adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,cursor, from, to,0);
+            listView.setAdapter(adapter);
+             */
             newstext.setTypeface(null, Typeface.BOLD);
             newstext.setGravity(Gravity.LEFT);
             newstext.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);

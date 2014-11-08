@@ -44,7 +44,7 @@ public class LoginApp extends Activity {
     public static final String idUsuario = "idUsuario";
 
 
-    private Button login;
+    private Button loginFace, btnLogin, btnregister;
     private Button publishButton;
     private Boolean logged;
 
@@ -80,25 +80,28 @@ public class LoginApp extends Activity {
 
             }
         };
-        /*if (savedInstanceState == null) {
-            // Add the fragment on initial activity setup
-            mainFragment = new MainFragment();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(android.R.id.content, mainFragment)
-                    .commit();
-        } else {
-            // Or set the fragment from restored state info
-            mainFragment = (MainFragment) getSupportFragmentManager()
-                    .findFragmentById(android.R.id.content);
-        }*/
-        //login button
-        login = (Button) findViewById(R.id.authButton);
-        login.setOnClickListener(new View.OnClickListener() {
+        btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                login();
+            }
+        });
+        btnregister = (Button) findViewById(R.id.btnRegistro);
+        btnregister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+                finish();
+            }
+        });
+        //Facebook login button
+        loginFace = (Button) findViewById(R.id.authButton);
+        loginFace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(logged == false){
-                    connectToFB();
+                    //connectToFB();
                     logged = true;
                     startActivity(new Intent(getApplicationContext(), mainActivity.class));
                     finish();
@@ -228,7 +231,34 @@ public class LoginApp extends Activity {
         super.onResume();
     }
 
-
+    /*
+    Login Normal
+    llama a CheckUser para mirar si usuario y contraseña coinciden
+     */
+    public void login(){
+        usuario = (EditText)findViewById(R.id.usuarioLogin);
+        password = (EditText)findViewById(R.id.passwordLogin);
+        user = usuario.getText().toString().trim();
+        passw = password.getText().toString().trim();
+        if (user.matches("") && passw.matches("")) {
+            Toast.makeText(this, "Ingrese Usuario y Contraseña", Toast.LENGTH_SHORT).show();
+        }else {
+            if (user.matches("")) {
+                Toast.makeText(this, "Ingrese Usuario", Toast.LENGTH_SHORT).show();
+            }else
+            if (passw.matches("")) {
+                Toast.makeText(this, "Ingrese Contraseña", Toast.LENGTH_SHORT).show();
+            } else {
+                try {
+                    passw = sha1(passw);
+                    loginOK = false;
+                    checkUser();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     public void checkUser(){
         //JSON URL
         String url = "http://solweb.co/reservas/api/login/logins";
@@ -248,8 +278,6 @@ public class LoginApp extends Activity {
                     for (int i = 0; i < len; i++) {
                         //Get the name of the field from array index
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        //Log.e("Usuario contraseña: ==> ",jsonObject.getString("user")+", "+jsonObject.getString("pass") );
-                        //Log.d("Usuario contraseña: Local ==> ",user+", "+passw);
                         if(user.equals(jsonObject.getString("user").trim())){
                             //Log.d("Usuario hallado ","True");
                             if(passw.equals(jsonObject.getString("pass").trim())){
@@ -258,11 +286,9 @@ public class LoginApp extends Activity {
                                 editor.putString(pass, passw);
                                 editor.putString(idUsuario, jsonObject.getString("id"));
                                 editor.commit();
-                                //Log.d("Password hallado ","True");
                                 loginOK = true;
                             }
                         }
-                        //SQLite
                     }
                 }
             } catch (JSONException e) {
@@ -296,33 +322,6 @@ public class LoginApp extends Activity {
             }
         }
     }
-
-    public void login(View view)
-    {
-        usuario = (EditText)findViewById(R.id.usuarioLogin);
-        password = (EditText)findViewById(R.id.passwordLogin);
-        user = usuario.getText().toString().trim();
-        passw = password.getText().toString().trim();
-        if (user.matches("") && passw.matches("")) {
-            Toast.makeText(this, "Ingrese Usuario y Contraseña", Toast.LENGTH_SHORT).show();
-        }else {
-            if (user.matches("")) {
-                Toast.makeText(this, "Ingrese Usuario", Toast.LENGTH_SHORT).show();
-            }else
-            if (passw.matches("")) {
-                Toast.makeText(this, "Ingrese Contraseña", Toast.LENGTH_SHORT).show();
-            } else {
-                try {
-                    passw = sha1(passw);
-                    loginOK = false;
-                    checkUser();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     public static String sha1(String input) throws NoSuchAlgorithmException {
         MessageDigest mDigest = MessageDigest.getInstance("SHA1");
         byte[] result = mDigest.digest(input.getBytes());
@@ -332,10 +331,4 @@ public class LoginApp extends Activity {
         }
         return sb.toString();
     }
-
-
-
-
-
-
 }
