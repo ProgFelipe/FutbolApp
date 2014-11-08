@@ -20,7 +20,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.androidquery.AQuery;
@@ -34,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -52,6 +55,7 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
     private CharSequence mTitle;
     private int sliderEffect;
     private TextView newstext;
+    private ListView listView;
     //Slider
     private SliderLayout newsSlider;
     //AQuery object
@@ -61,6 +65,7 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actividad_principal);
+        listView = (ListView)findViewById(R.id.listViewMatches);
         newstext = (TextView)findViewById(R.id.textViewMain);
         newstext.setMovementMethod(new ScrollingMovementMethod());
         sliderEffect = 0;
@@ -191,9 +196,13 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
         switch (item.getItemId()) {
             case R.id.action_matchs:
                 getData("http://www.football-data.org/fixtures","fixtures");
+                listView.setVisibility(View.VISIBLE);
+                newstext.setVisibility(View.INVISIBLE);
                 return true;
             case R.id.action_aboutus:
                 getData("http://solweb.co/reservas/api/promotion/promotions","promotions");
+                newstext.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.INVISIBLE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -403,12 +412,14 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
     public void jsonCallbackFixtures(String url, JSONArray json, AjaxStatus status) {
         //When JSON is not null
         String promociones = "PARTIDOS HOY\n";
+        ArrayList<String> matches = new ArrayList<String>();
         if (json != null) {
             try {
                 //Get json as Array
                 if (json != null) {
                     Calendar c = Calendar.getInstance();
                     String dia= "";
+                    matches.add("*   HOY");
                     if(c.get(Calendar.DAY_OF_WEEK)+1 < 10){dia =  "0"+Integer.toString(c.get(Calendar.DAY_OF_WEEK)+1);}else{
                         dia =  Integer.toString(c.get(Calendar.DAY_OF_WEEK)+1);}
                     int len = json.length();
@@ -419,12 +430,12 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                         String time = date.substring(11, 19);
                         String day = date.substring(8, 10);
                         if(day.equals(dia)){
-                            promociones += "L: "+jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam")+" :V\n";
+                            matches.add(jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam"));
                         }
                     }
                     if(c.get(Calendar.DAY_OF_WEEK)+1 < 10){dia =  "0"+Integer.toString(c.get(Calendar.DAY_OF_WEEK)+2);}else{
                         dia =  Integer.toString(c.get(Calendar.DAY_OF_WEEK)+2);}
-                    promociones += "**MAÑANA**"+"\n";
+                    matches.add("*  MAÑANA");
                     for (int i = 0; i < len; i++) {
                         JSONObject jsonObject = json.getJSONObject(i);
                         String date = jsonObject.getString("date");
@@ -432,7 +443,7 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                         String time = date.substring(11, 19);
                         String day = date.substring(8, 10);
                         if(day.equals(dia)){
-                            promociones += "L: "+jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam")+" :V\n";
+                            matches.add(jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam"));
                         }
                     }
                 }
@@ -442,17 +453,16 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
             } catch (Exception e) {
                 Toast.makeText(aq.getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
-            /*
-            On List view improvements
-            *            String[] from = new String[]{manager.CN_Nombre,manager.CN_Telefono};
-            int [] to = new int[]{android.R.id.text1,android.R.id.text2};
-            adapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,cursor, from, to,0);
+
+            //On List view improvements
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_list_item_1, android.R.id.text1, matches);
             listView.setAdapter(adapter);
-             */
+            /*
             newstext.setTypeface(null, Typeface.BOLD);
             newstext.setGravity(Gravity.LEFT);
             newstext.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
-            newstext.setText(promociones);
+            newstext.setText(promociones);*/
         }
         //When JSON is null
         else {

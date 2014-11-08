@@ -28,7 +28,18 @@
             android:layout_below="@+id/slider"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:visibility="visible"
             android:background="@drawable/soccerfield" />
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/slider"
+            android:id="@+id/listViewMatches"
+            android:background="@drawable/soccerfield"
+            android:gravity="center"
+            android:visibility="invisible"
+            android:fastScrollEnabled="true"
+            android:smoothScrollbar="false" />
     </RelativeLayout>
     <ListView
         android:id="@+id/left_drawer"
