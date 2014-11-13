@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -56,6 +57,7 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
     private int sliderEffect;
     private TextView newstext;
     private ListView listView;
+    private Calendar c;
     //Slider
     private SliderLayout newsSlider;
     //AQuery object
@@ -195,6 +197,7 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_matchs:
+                c = Calendar.getInstance();
                 getData("http://www.football-data.org/fixtures","fixtures");
                 listView.setVisibility(View.VISIBLE);
                 newstext.setVisibility(View.INVISIBLE);
@@ -413,37 +416,48 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
         //When JSON is not null
         String promociones = "PARTIDOS HOY\n";
         ArrayList<String> matches = new ArrayList<String>();
+
         if (json != null) {
             try {
                 //Get json as Array
                 if (json != null) {
-                    Calendar c = Calendar.getInstance();
-                    String dia= "";
-                    matches.add("*   HOY");
-                    if(c.get(Calendar.DAY_OF_WEEK)+1 < 10){dia =  "0"+Integer.toString(c.get(Calendar.DAY_OF_WEEK)+1);}else{
-                        dia =  Integer.toString(c.get(Calendar.DAY_OF_WEEK)+1);}
+                    String manana= "";
+                    String hoy = "";
+                    int dayofweek = c.get(Calendar.DAY_OF_MONTH);
+                    Log.i("day of week ", Integer.toString(dayofweek));
+                    matches.add("*   HOY  "+Integer.toString(dayofweek));
+                    if(dayofweek < 10){hoy =  "0"+Integer.toString(dayofweek);}else{
+                        hoy =  Integer.toString(dayofweek);}
                     int len = json.length();
                     for (int i = 0; i < len; i++) {
                         JSONObject jsonObject = json.getJSONObject(i);
                         String date = jsonObject.getString("date");
-                        String month = date.substring(5, 7);
-                        String time = date.substring(11, 19);
                         String day = date.substring(8, 10);
-                        if(day.equals(dia)){
+                        Log.e("DIA", day + " y sistem Day " + hoy);
+                        if(day.equals(hoy)){
                             matches.add(jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam"));
                         }
                     }
-                    if(c.get(Calendar.DAY_OF_WEEK)+1 < 10){dia =  "0"+Integer.toString(c.get(Calendar.DAY_OF_WEEK)+2);}else{
-                        dia =  Integer.toString(c.get(Calendar.DAY_OF_WEEK)+2);}
-                    matches.add("*  MAÑANA");
+                    if(dayofweek < 10){manana =  "0"+Integer.toString(dayofweek+1);}else{
+                        manana =  Integer.toString(dayofweek+1);}
+                    matches.add("*  MAÑANA  "+Integer.toString(dayofweek+1));
+                    for (int i = 0; i < len; i++) {
+                        JSONObject jsonObject = json.getJSONObject(i);
+                        String date = jsonObject.getString("date");
+                        String day = date.substring(8, 10);
+                        if(day.equals(manana)){
+                            matches.add(jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam"));
+                        }
+                    }
+                    matches.add("*  PROXIMOS  PARTIDOS  *");
                     for (int i = 0; i < len; i++) {
                         JSONObject jsonObject = json.getJSONObject(i);
                         String date = jsonObject.getString("date");
                         String month = date.substring(5, 7);
                         String time = date.substring(11, 19);
                         String day = date.substring(8, 10);
-                        if(day.equals(dia)){
-                            matches.add(jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam"));
+                        if(!day.equals(hoy) || !day.equals(manana)){
+                            matches.add(jsonObject.getString("homeTeam")+ " - " + jsonObject.getString("awayTeam")+" día "+day+"/"+month);
                         }
                     }
                 }
@@ -480,4 +494,39 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
             }
         }
     }
+    //Future get fields more leagues
+   /* private List readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List entries = new ArrayList();
+
+        parser.require(XmlPullParser.START_TAG, ns, "feed");
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            // Starts by looking for the entry tag
+            if (name.equals("entry")) {
+                entries.add(readEntry(parser));
+            } else {
+                skip(parser);
+            }
+        }
+        return entries;
+    }
+    public class StackOverflowXmlParser {
+        // We don't use namespaces
+        private static final String ns = null;
+
+        public List parse(InputStream in) throws XmlPullParserException, IOException {
+            try {
+                XmlPullParser parser = Xml.newPullParser();
+                parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+                parser.setInput(in, null);
+                parser.nextTag();
+                return readFeed(parser);
+            } finally {
+                in.close();
+            }
+        }
+    }*/
 }
