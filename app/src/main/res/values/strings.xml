@@ -18,8 +18,10 @@
     <string name="nav1">Buscar por nombre</string>
     <string name="nav2">Buscar por fecha</string>
     <string name="nav3">Ver Canchas en Mapa</string>
-    <string name="nav4">cerrar sessión</string>
+    <string name="nav4">cerrar sesión</string>
     <!--End-->
+    <string name="LoginUsuario">Usuario</string>
+    <string name="LoginContrasena">Contraseña</string>
 
     <string name="registroUsuario">Usuario</string>
     <string name="contraseñaUsuario">Contraseña</string>
