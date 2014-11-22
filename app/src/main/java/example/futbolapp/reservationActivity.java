@@ -136,7 +136,7 @@ public class reservationActivity extends Activity {
                 if(b){
                     selectedDate = true;
                     Calendar c = Calendar.getInstance();
-                    day = c.get(Calendar.DAY_OF_WEEK)+1;
+                    day = c.get(Calendar.DAY_OF_MONTH);
                     month = c.get(Calendar.MONTH)+1;
                     year = c.get(Calendar.YEAR);
                 }
@@ -364,7 +364,7 @@ public class reservationActivity extends Activity {
         }
         cursor.close();
         Notification notificacion = new Notification(
-                R.drawable.ic_launcher,
+                R.drawable.ic_notification,
                 "Reserva con éxito",
                 System.currentTimeMillis() );
         PendingIntent intencionPendiente = PendingIntent.getActivity(

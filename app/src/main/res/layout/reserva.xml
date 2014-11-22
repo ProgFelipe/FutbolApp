@@ -9,8 +9,6 @@
     android:id="@+id/content_frame"
     android:background="#E8E3DC"
     android:layout_height="match_parent">
-
-
     <FrameLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

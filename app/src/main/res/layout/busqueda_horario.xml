@@ -11,7 +11,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/content_frame">
+        android:id="@+id/content_frame"
+    android:paddingLeft="20sp"
+    android:paddingRight="20sp">
 
     <Button
         android:layout_width="wrap_content"
@@ -47,7 +49,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Seleccione una fecha (Por defecto día de hoy)"
         android:gravity="center"
-        android:layout_marginTop="10dp"
         android:id="@+id/textView2"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -118,7 +119,7 @@
         android:id="@+id/btnBsqInTime"
         android:background="@drawable/btn_shape"
         android:layout_gravity="right|bottom"
-        android:layout_alignBottom="@+id/txtresultFecha"
+        android:layout_alignTop="@+id/textView6"
         android:layout_alignRight="@+id/btnBsqHora"
         android:layout_alignEnd="@+id/btnBsqHora" />
 

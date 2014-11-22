@@ -51,16 +51,16 @@ public class eventsActivity extends Activity {
     ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private ListView listView;
+    public static ListView listView;
     private DB_Manager manager;
-    private ArrayList idReservas;
+    public static ArrayList idReservas;
     private Button btnCancelar;
     private String Seleccion;
     private Session currentSession;
     private String idUser;
     public static String cancelarId;
 
-    private ArrayList<Item> items;
+    public static ArrayList<Item> items;
     private Session.StatusCallback sessionStatusCallback;
 
     //AQuery object
@@ -233,7 +233,7 @@ public class eventsActivity extends Activity {
     public void publishEvents() {
         Bundle params = new Bundle();
         params.putString("name", "Reserva Cancha Finder");
-        params.putString("caption", "Futbolista: Felipe");
+        params.putString("caption", "CanchaFinder");
         params.putString("description", Seleccion);
         params.putString("link", "http://www.solweb.co/reservas/CanchaFinder/index.php");
         params.putString("picture","http://www.solweb.co/reservas/api_movil/ic_launcher.png");
@@ -431,13 +431,6 @@ public class eventsActivity extends Activity {
 
             // 3. setListAdapter
             listView.setAdapter(adapter2);
-            /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                    this,
-                    android.R.layout.simple_list_item_1,
-                    reservas );
-
-            listView.setAdapter(arrayAdapter);*/
-
         }
         //When JSON is null
         else {
@@ -464,7 +457,7 @@ public class eventsActivity extends Activity {
             connectToFB();
         }
     }
-    public void shareWhereYouWant(){
+    public void shareWhereYouWant(View view){
         if(Seleccion != null){
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);

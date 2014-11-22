@@ -2,6 +2,7 @@ package example.futbolapp;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -13,17 +14,15 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.androidquery.AQuery;
@@ -42,6 +41,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 import example.futbolapp.View.DrawerItemCustomAdapter;
+import example.futbolapp.View.Item;
+import example.futbolapp.View.MyListAdapter;
 import example.futbolapp.View.ObjectDrawerItem;
 
 /**
@@ -131,11 +132,11 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
         url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");*/
 
         HashMap<String,Integer> file_maps = new HashMap<String, Integer>();
-        file_maps.put("NEWS 1",R.drawable.field1);
-        file_maps.put("NEWS 2",R.drawable.field2);
-        file_maps.put("NEW 3",R.drawable.field3);
-        file_maps.put("NEWS 4", R.drawable.field4);
-        file_maps.put("NEWS 5", R.drawable.field6);
+        file_maps.put("Sudamericana",R.drawable.field1);
+        file_maps.put("Sudamericana",R.drawable.field2);
+        file_maps.put("Ballon d’Or 12-2015",R.drawable.field3);
+        file_maps.put("Falcao lesión?", R.drawable.field4);
+        file_maps.put("Cuadrado", R.drawable.field6);
 
         for(String name : file_maps.keySet()){
             TextSliderView textSliderView = new TextSliderView(this);
@@ -207,9 +208,37 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                 newstext.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.INVISIBLE);
                 return true;
+            //case R.id.action_login:
+// 1. Instantiate an AlertDialog.Builder with its constructor
+                //AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                //return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.login_dialog, null))
+                // Add action buttons
+                .setPositiveButton(R.string.LoginUsuario, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // sign in the user ...
+                    }
+                })
+                .setNegativeButton(R.string.LoginContrasena, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //mainActivity.this.getDialog().cancel();
+                    }
+                });
+        return builder.create();
     }
 
     @Override
@@ -414,9 +443,9 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
     }
     public void jsonCallbackFixtures(String url, JSONArray json, AjaxStatus status) {
         //When JSON is not null
-        String promociones = "PARTIDOS HOY\n";
         ArrayList<String> matches = new ArrayList<String>();
-
+        matches.add("SOLO EN CANCHAFINDER ENCUENTRAS");
+        matches.add("{{PARTIDOS DE 1ERA Y 2DA DIVISION DE LAS LIGAS EUROPEAS}}");
         if (json != null) {
             try {
                 //Get json as Array
@@ -424,8 +453,9 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                     String manana= "";
                     String hoy = "";
                     int dayofweek = c.get(Calendar.DAY_OF_MONTH);
-                    Log.i("day of week ", Integer.toString(dayofweek));
-                    matches.add("*   HOY  "+Integer.toString(dayofweek));
+                    //Log.i("day of week ", Integer.toString(dayofweek));
+                    matches.add("HOY   "+Integer.toString(dayofweek));
+                    matches.add("");
                     if(dayofweek < 10){hoy =  "0"+Integer.toString(dayofweek);}else{
                         hoy =  Integer.toString(dayofweek);}
                     int len = json.length();
@@ -433,23 +463,27 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                         JSONObject jsonObject = json.getJSONObject(i);
                         String date = jsonObject.getString("date");
                         String day = date.substring(8, 10);
-                        Log.e("DIA", day + " y sistem Day " + hoy);
+                        //Log.e("DIA", day + " y sistem Day " + hoy);
                         if(day.equals(hoy)){
-                            matches.add(jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam"));
+                            matches.add(jsonObject.getString("homeTeam"));
+                            matches.add(jsonObject.getString("awayTeam"));
                         }
                     }
                     if(dayofweek < 10){manana =  "0"+Integer.toString(dayofweek+1);}else{
                         manana =  Integer.toString(dayofweek+1);}
-                    matches.add("*  MAÑANA  "+Integer.toString(dayofweek+1));
+                    matches.add("MAÑANA  "+Integer.toString(dayofweek+1));
+                    matches.add("");
                     for (int i = 0; i < len; i++) {
                         JSONObject jsonObject = json.getJSONObject(i);
                         String date = jsonObject.getString("date");
                         String day = date.substring(8, 10);
                         if(day.equals(manana)){
-                            matches.add(jsonObject.getString("homeTeam")+ " VS " + jsonObject.getString("awayTeam"));
+                            matches.add(jsonObject.getString("homeTeam"));
+                            matches.add(jsonObject.getString("awayTeam"));
                         }
                     }
                     matches.add("*  PROXIMOS  PARTIDOS  *");
+                    matches.add("");
                     for (int i = 0; i < len; i++) {
                         JSONObject jsonObject = json.getJSONObject(i);
                         String date = jsonObject.getString("date");
@@ -457,7 +491,9 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                         String time = date.substring(11, 19);
                         String day = date.substring(8, 10);
                         if(!day.equals(hoy) || !day.equals(manana)){
-                            matches.add(jsonObject.getString("homeTeam")+ " - " + jsonObject.getString("awayTeam")+" día "+day+"/"+month);
+                            int ddd =  Integer.parseInt(day)+1;
+                            matches.add("DÍA "+ddd+"/"+month);
+                            matches.add(jsonObject.getString("homeTeam")+ " - " + jsonObject.getString("awayTeam"));
                         }
                     }
                 }
@@ -469,9 +505,13 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
             }
 
             //On List view improvements
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_list_item_1, android.R.id.text1, matches);
-            listView.setAdapter(adapter);
+
+            ArrayList<Item> items = new ArrayList<Item>();
+            for(int i = 0; i < matches.size(); i += 2){
+                items.add(new Item(matches.get(i), matches.get(i+1)));
+            }
+            MyListAdapter AdapertPartidos = new MyListAdapter(this, items);
+            listView.setAdapter(AdapertPartidos);
             /*
             newstext.setTypeface(null, Typeface.BOLD);
             newstext.setGravity(Gravity.LEFT);
@@ -494,39 +534,4 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
             }
         }
     }
-    //Future get fields more leagues
-   /* private List readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List entries = new ArrayList();
-
-        parser.require(XmlPullParser.START_TAG, ns, "feed");
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String name = parser.getName();
-            // Starts by looking for the entry tag
-            if (name.equals("entry")) {
-                entries.add(readEntry(parser));
-            } else {
-                skip(parser);
-            }
-        }
-        return entries;
-    }
-    public class StackOverflowXmlParser {
-        // We don't use namespaces
-        private static final String ns = null;
-
-        public List parse(InputStream in) throws XmlPullParserException, IOException {
-            try {
-                XmlPullParser parser = Xml.newPullParser();
-                parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-                parser.setInput(in, null);
-                parser.nextTag();
-                return readFeed(parser);
-            } finally {
-                in.close();
-            }
-        }
-    }*/
 }
