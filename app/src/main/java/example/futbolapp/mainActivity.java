@@ -351,7 +351,7 @@ public class mainActivity  extends Activity implements BaseSliderView.OnSliderCl
                 new AlertDialog.Builder(this)
                         .setIcon(R.drawable.ic_launcher)
                         .setTitle("Saliendo CanchaFinder")
-                        .setMessage("¿Esta seguro que desea cerrar sessión?")
+                        .setMessage("¿Esta seguro que desea cerrar sesión?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

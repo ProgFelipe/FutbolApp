@@ -4,10 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_rounder">
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/field3" />
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
@@ -24,12 +20,13 @@
         android:id="@+id/txtHeaderLogin"
         android:layout_marginTop="50dp"
         android:editable="false"
-        android:textColor="#fff4f4f4"
-        android:textSize="20dp"
+        android:textColor="#ffff8d24"
+        android:textSize="25dp"
         android:textStyle="bold"
         android:typeface="sans"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:shadowColor="#ff46632b" />
 
 
         <EditText
@@ -45,7 +42,7 @@
             android:clickable="true"
             android:hint="Usuario"
             android:textColor="#fff4f4f4"
-            android:textColorHint="#cf23ff00"
+            android:textColorHint="#ff000000"
             android:textColorHighlight="#fff4f4f4"
             android:layout_alignLeft="@+id/txtHeaderLogin"
             android:layout_alignStart="@+id/txtHeaderLogin"
@@ -65,7 +62,7 @@
             android:visibility="visible"
             android:hint="Contraseña"
             android:textColor="#fff4f4f4"
-            android:textColorHint="#cfff0002"
+            android:textColorHint="#ff000000"
             android:textColorHighlight="#fff4f4f4"
             android:layout_alignRight="@+id/usuarioLogin"
             android:layout_alignEnd="@+id/usuarioLogin"
@@ -103,12 +100,10 @@
         android:text="Registrarse"
         android:id="@+id/btnRegistro"
         android:background="@drawable/btn_default"
-        android:layout_below="@+id/btnLogin"
-        android:layout_alignRight="@+id/btnLogin"
-        android:layout_alignEnd="@+id/btnLogin"
+        android:textColor="#ff000000"
+        android:layout_above="@+id/authButton"
         android:layout_alignLeft="@+id/btnLogin"
-        android:layout_alignStart="@+id/btnLogin"
-        android:textColor="#ff000000" />
+        android:layout_alignStart="@+id/btnLogin" />
 
 </RelativeLayout>
 </ScrollView>
