@@ -59,6 +59,7 @@ public class eventsActivity extends Activity {
     private Session currentSession;
     private String idUser;
     public static String cancelarId;
+    private MyAdapter adapter2;
 
     public static ArrayList<Item> items;
     private Session.StatusCallback sessionStatusCallback;
@@ -121,8 +122,7 @@ public class eventsActivity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               Seleccion = items.get(position).getTitle()+" "+items.get(position).getDescription();
-               cancelarId = idReservas.get(position).toString();
+                setSelectedItem(position);
             }
         });
 
@@ -222,6 +222,11 @@ public class eventsActivity extends Activity {
             Toast.makeText(getApplicationContext(), "session closed",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void setSelectedItem(int position){
+        Seleccion = items.get(position).getTitle()+" "+items.get(position).getDescription();
+        cancelarId = idReservas.get(position).toString();
     }
 
     public Session getSession(){
@@ -427,10 +432,11 @@ public class eventsActivity extends Activity {
             }
             // 1. pass context and data to the custom adapter
             items = generateData(reservas);
-            MyAdapter adapter2 = new MyAdapter(this, items);
+            adapter2 = new MyAdapter(this, items);
 
             // 3. setListAdapter
             listView.setAdapter(adapter2);
+
         }
         //When JSON is null
         else {
@@ -450,7 +456,14 @@ public class eventsActivity extends Activity {
     }
 
     public void shareOnFacebook(View view){
+        //view.setVisibility(View.GONE);
+        View parentRow = (View) view.getParent();
+        ListView listView = (ListView) parentRow.getParent();
+        final int position = listView.getPositionForView(parentRow);
+        setSelectedItem(position);
+
         currentSession = getSession();
+        //setSelectedItem(listView.getSelectedItemPosition());
         if(currentSession != null && currentSession.isOpened()) {
             publishEvents();
         }else{
@@ -458,6 +471,10 @@ public class eventsActivity extends Activity {
         }
     }
     public void shareWhereYouWant(View view){
+        View parentRow = (View) view.getParent();
+        ListView listView = (ListView) parentRow.getParent();
+        final int position = listView.getPositionForView(parentRow);
+        setSelectedItem(position);
         if(Seleccion != null){
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
